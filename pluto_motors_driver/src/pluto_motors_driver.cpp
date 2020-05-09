@@ -6,68 +6,22 @@
 #include <pluto_motors_driver.hpp>
 
 #include <iostream>
-#include <softPwm.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
-#include <wiringPi.h>
 
-#define PIN_PWM0 26 // HW 32
-#define PIN_DIR0 27 // HW 36
-#define PIN_FG0 28  // HW 38
-#define PIN_PWM1 22 // HW 31
-#define PIN_DIR1 23 // HW 33
-#define PIN_FG1 24  // HW 35
-#define PULSES_PER_CYCLE 45 * 6
-#define POWER_RANGE 100
-
+#ifdef RPI
 int fg0_prev_time = millis();
 int fg0_counter = 0;
 int fg0_prev_counter = 0;
-
-bool PlutoMotorsDriver::setMotorsPower(
-    pluto_msgs::SetMotorsPower::Request &req,
-    pluto_msgs::SetMotorsPower::Response &res) {
-  auto time = ros::Time::now();
-
-  if (abs(req.left_motor_power) > POWER_RANGE ||
-      abs(req.right_motor_power) > POWER_RANGE) {
-    res.retval = pluto_msgs::SetMotorsPower::Response::WRONG_MOTOR_POWER_VALUE;
-    return true;
-  }
-
-  // Set direction
-  if (req.left_motor_power < 0) {
-    digitalWrite(PIN_DIR0, HIGH);
-  }
-  if (req.left_motor_power >= 0) {
-    digitalWrite(PIN_DIR0, LOW);
-  }
-  if (req.right_motor_power < 0) {
-    digitalWrite(PIN_DIR1, LOW);
-  }
-  if (req.right_motor_power >= 0) {
-    digitalWrite(PIN_DIR1, HIGH);
-  }
-
-  // Set Duty Cycle
-  ROS_INFO_STREAM(abs(req.left_motor_power));
-  ROS_INFO_STREAM(abs(req.right_motor_power));
-  ;
-  softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(req.left_motor_power)));
-  softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(req.right_motor_power)));
-
-  res.retval = pluto_msgs::SetMotorsPower::Response::SUCCESS;
-
-  ROS_INFO_STREAM(ros::Time::now() - time);
-
-  return true;
-}
+#endif
 
 void PlutoMotorsDriver::setMotorsPowerCallback(
     const pluto_msgs::MotorsPower &mp) {
   auto time = ros::Time::now();
+
+#ifdef RPI
   if (abs(mp.left_motor_power) > POWER_RANGE ||
       abs(mp.right_motor_power) > POWER_RANGE) {
     ROS_ERROR_STREAM("MotorsPower values outside range!");
@@ -94,10 +48,12 @@ void PlutoMotorsDriver::setMotorsPowerCallback(
   ;
   softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(mp.left_motor_power)));
   softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(mp.right_motor_power)));
+#endif
 
   ROS_INFO_STREAM(ros::Time::now() - time);
 }
 
+#ifdef RPI
 void fg0Feedback() {
   fg0_counter++;
   // int cur_time = millis();
@@ -120,8 +76,37 @@ void fg0FeedbackTimer() {
     delay(1000);
   }
 }
+#endif
 
 PlutoMotorsDriver::PlutoMotorsDriver() {
+
+  // setup hardware interface..
+
+  // connect and register the joint state interface
+  hardware_interface::JointStateHandle state_handle_a("A", &pos[0], &vel[0],
+                                                      &eff[0]);
+  jnt_state_interface.registerHandle(state_handle_a);
+
+  hardware_interface::JointStateHandle state_handle_b("B", &pos[1], &vel[1],
+                                                      &eff[1]);
+  jnt_state_interface.registerHandle(state_handle_b);
+
+  registerInterface(&jnt_state_interface);
+
+  // connect and register the joint position interface
+  hardware_interface::JointHandle pos_handle_a(
+      jnt_state_interface.getHandle("A"), &cmd[0]);
+  jnt_pos_interface.registerHandle(pos_handle_a);
+
+  hardware_interface::JointHandle pos_handle_b(
+      jnt_state_interface.getHandle("B"), &cmd[1]);
+  jnt_pos_interface.registerHandle(pos_handle_b);
+
+  registerInterface(&jnt_pos_interface);
+
+#ifdef NOTRPI
+  // Setup RPi4 hardware..
+
   if (wiringPiSetup() == -1) {
     ROS_ERROR_STREAM("Failed to setup RPI GPIO");
   }
@@ -142,13 +127,11 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   softPwmWrite(PIN_PWM0, POWER_RANGE);
   softPwmCreate(PIN_PWM1, POWER_RANGE, POWER_RANGE);
   softPwmWrite(PIN_PWM1, POWER_RANGE);
+
   std::thread fg0_timer(fg0FeedbackTimer);
 
   fg0_timer.detach();
-
-  // Start Service
-  service_server_ = nh_.advertiseService(
-      "set_motors_power", &PlutoMotorsDriver::setMotorsPower, this);
+#endif
 
   // Start Subscriber
   topic_sub_ = nh_.subscribe("/motors_power", 1000,

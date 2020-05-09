@@ -3,16 +3,18 @@
  * Vittorio Lumare venom@venom.it
  */
 
-#include <pluto_motors_driver.hpp>
 #include "ros/ros.h"
+#include <controller_manager/controller_manager.h>
+#include <pluto_motors_driver.hpp>
 
-int main (int argc, char **argv)
-{
-    ros::init(argc, argv, "pluto_motors_driver_node");    
+int main(int argc, char **argv) {
+  ros::init(argc, argv, "pluto_motors_driver_node");
 
-    PlutoMotorsDriver pmd;    
+  PlutoMotorsDriver pmd;
 
-    ros::spin();
+  controller_manager::ControllerManager cm(&pmd);
 
-    return 0;
+  ros::spin();
+
+  return 0;
 }

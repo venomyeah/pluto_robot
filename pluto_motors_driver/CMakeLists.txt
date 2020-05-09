@@ -1,13 +1,15 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(pluto_motors_driver)
 
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED
   roscpp
   std_msgs
-  message_generation
-  pluto_msgs)
+  pluto_msgs
+  hardware_interface
+  controller_manager
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -44,7 +46,7 @@ include_directories(
 )
 
 set (LIBRARIES
- wiringPi
+ #NOTRPI wiringPi
  crypt
  pthread
  rt
