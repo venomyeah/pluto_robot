@@ -1,0 +1,10 @@
+# Power can be [-1024, 1024]
+# It expresses the PWM duty cycle
+# Negative values cause reverse direction
+
+int32 left_motor_power
+int32 right_motor_power
+---
+string retval
+string WRONG_MOTOR_POWER_VALUE = WRONG_MOTOR_POWER_VALUE
+string SUCCESS = SUCCESS

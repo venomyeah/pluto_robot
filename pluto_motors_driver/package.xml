@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pluto_motors_driver</name>
+  <version>0.0.1</version>
+  <description>The pluto_motors_driver package</description>
+
+  <maintainer email="venom@venom.it">Vittorio Lumare</maintainer>
+
+  <license>GPLv3</license>
+
+  <build_depend>message_generation</build_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+
+  <buildtool_depend>catkin</buildtool_depend> 
+
+  <export>
+  </export>
+</package>

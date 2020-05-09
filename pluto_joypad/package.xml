@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pluto_joypad</name>
+  <version>0.0.1</version>
+  <description>The pluto_joypad package</description>
+
+  <maintainer email="venom@venom.it">Vittorio Lumare</maintainer>
+
+  <license>GPLv3</license>
+
+  <depend>pluto_msgs</depend>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>
