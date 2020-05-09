@@ -20,10 +20,10 @@ class PlutoMotorsDriver {
 public:
   PlutoMotorsDriver();
 
-  bool setMotorsPower(pluto_motors_driver::SetMotorsPower::Request &req,
-                      pluto_motors_driver::SetMotorsPower::Response &res);
+  bool setMotorsPower(pluto_msgs::SetMotorsPower::Request &req,
+                      pluto_msgs::SetMotorsPower::Response &res);
 
-  void setMotorsPowerCallback(const pluto_motors_driver::MotorsPower &mp);
+  void setMotorsPowerCallback(const pluto_msgs::MotorsPower &mp);
 
 private:
   ros::NodeHandle nh_;
