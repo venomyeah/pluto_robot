@@ -18,6 +18,9 @@ int fg0_prev_counter = 0;
 int fg1_prev_time = millis();
 int fg1_counter = 0;
 int fg1_prev_counter = 0;
+double left_wheel_cycles_per_sec_;
+double right_wheel_cycles_per_sec_;
+
 #endif
 
 
@@ -35,8 +38,7 @@ void fg0FeedbackTimer() {
   ros::Rate r(feedback_rate);
   while (ros::ok()) {
     int fg0_counter_frozen = fg0_counter;
-    double wheel_angular_vel = feedback_rate * static_cast<double>(fg0_counter_frozen - fg0_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
-    printf("\t\t\t\t\t\t%f\n", wheel_angular_vel);
+    left_wheel_cycles_per_sec_ = feedback_rate * static_cast<double>(fg0_counter_frozen - fg0_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
 
     fg0_prev_counter = fg0_counter_frozen;
     r.sleep();
@@ -48,8 +50,7 @@ void fg1FeedbackTimer() {
   ros::Rate r(feedback_rate);
   while (ros::ok()) {
     int fg1_counter_frozen = fg1_counter;
-    double wheel_angular_vel = feedback_rate * static_cast<double>(fg1_counter_frozen - fg1_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
-    printf("%f\n", wheel_angular_vel);
+    right_wheel_cycles_per_sec_ = feedback_rate * static_cast<double>(fg1_counter_frozen - fg1_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
 
     fg1_prev_counter = fg1_counter_frozen;
     r.sleep();
@@ -125,8 +126,8 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
   // mocked actual data
-  vel[0] = cmd[0];
-  vel[1] = cmd[1];
+  vel[0] = left_wheel_cycles_per_sec_;
+  vel[1] = right_wheel_cycles_per_sec_;
 
 }
 

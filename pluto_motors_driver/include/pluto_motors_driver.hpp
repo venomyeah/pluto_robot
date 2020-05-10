@@ -42,15 +42,20 @@ public:
 private:
   ros::NodeHandle nh_;
 
-  // hw interface
+// hw interface  
+private:
   hardware_interface::JointStateInterface jnt_state_interface;
   hardware_interface::VelocityJointInterface jnt_vel_interface;
   double cmd[2];
   double pos[2];
   double vel[2];
   double eff[2];
-
 public:
   void read(const ros::Time &time, const ros::Duration &period);
   void write(const ros::Time &time, const ros::Duration &period);
+
+// RPi Hardware  
+private:
+//  double left_wheel_cycles_per_sec_;
+//  double right_wheel_cycles_per_sec_;
 };
