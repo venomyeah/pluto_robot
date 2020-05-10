@@ -83,26 +83,26 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   // setup hardware interface..
 
   // connect and register the joint state interface
-  hardware_interface::JointStateHandle state_handle_a("A", &pos[0], &vel[0],
-                                                      &eff[0]);
+  hardware_interface::JointStateHandle state_handle_a("left_wheel", &pos[0],
+                                                      &vel[0], &eff[0]);
   jnt_state_interface.registerHandle(state_handle_a);
 
-  hardware_interface::JointStateHandle state_handle_b("B", &pos[1], &vel[1],
-                                                      &eff[1]);
+  hardware_interface::JointStateHandle state_handle_b("right_wheel", &pos[1],
+                                                      &vel[1], &eff[1]);
   jnt_state_interface.registerHandle(state_handle_b);
 
   registerInterface(&jnt_state_interface);
 
-  // connect and register the joint position interface
+  // connect and register the joint velocity interface
   hardware_interface::JointHandle pos_handle_a(
-      jnt_state_interface.getHandle("A"), &cmd[0]);
-  jnt_pos_interface.registerHandle(pos_handle_a);
+      jnt_state_interface.getHandle("left_wheel"), &cmd[0]);
+  jnt_vel_interface.registerHandle(pos_handle_a);
 
   hardware_interface::JointHandle pos_handle_b(
-      jnt_state_interface.getHandle("B"), &cmd[1]);
-  jnt_pos_interface.registerHandle(pos_handle_b);
+      jnt_state_interface.getHandle("right_wheel"), &cmd[1]);
+  jnt_vel_interface.registerHandle(pos_handle_b);
 
-  registerInterface(&jnt_pos_interface);
+  registerInterface(&jnt_vel_interface);
 
 #ifdef NOTRPI
   // Setup RPi4 hardware..
@@ -136,4 +136,47 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   // Start Subscriber
   topic_sub_ = nh_.subscribe("/motors_power", 1000,
                              &PlutoMotorsDriver::setMotorsPowerCallback, this);
+}
+
+void PlutoMotorsDriver::read(const ros::Time &time,
+                             const ros::Duration &period) {
+  // mocked actual data
+  vel[0] = cmd[0];
+  vel[1] = cmd[1];
+}
+
+void PlutoMotorsDriver::write(const ros::Time &time,
+                              const ros::Duration &period) {
+
+  pluto_msgs::MotorsPower mp;
+  mp.left_motor_power = cmd[0];
+  mp.right_motor_power = cmd[1];
+#ifdef RPI
+  if (abs(mp.left_motor_power) > POWER_RANGE ||
+      abs(mp.right_motor_power) > POWER_RANGE) {
+    ROS_ERROR_STREAM("MotorsPower values outside range!");
+    return;
+  }
+
+  // Set direction
+  if (mp.left_motor_power < 0) {
+    digitalWrite(PIN_DIR0, HIGH);
+  }
+  if (mp.left_motor_power >= 0) {
+    digitalWrite(PIN_DIR0, LOW);
+  }
+  if (mp.right_motor_power < 0) {
+    digitalWrite(PIN_DIR1, LOW);
+  }
+  if (mp.right_motor_power >= 0) {
+    digitalWrite(PIN_DIR1, HIGH);
+  }
+
+  // Set Duty Cycle
+  ROS_INFO_STREAM(abs(mp.left_motor_power));
+  ROS_INFO_STREAM(abs(mp.right_motor_power));
+  ;
+  softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(mp.left_motor_power)));
+  softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(mp.right_motor_power)));
+#endif
 }

@@ -14,7 +14,21 @@ int main(int argc, char **argv) {
 
   controller_manager::ControllerManager cm(&pmd);
 
-  ros::spin();
+  ros::Rate r(100);
+  ros::AsyncSpinner spinner(2);
+  spinner.start();
+
+  ros::Time ts = ros::Time::now();
+  while (ros::ok()) {
+
+    ros::Duration d = ts - ros::Time::now();
+    ts = ros::Time::now();
+    pmd.read(ts, d);
+    cm.update(ts, d);
+    pmd.write(ts, d);
+
+    r.sleep();
+  }
 
   return 0;
 }

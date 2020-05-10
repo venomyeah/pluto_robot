@@ -2,7 +2,9 @@
 <launch>
   <rosparam file="$(find pluto_motors_driver)/config/controller_config.yaml" command="load"/>
 
-  <!-- load robot description  TODO -->
+  <!-- load robot description -->
+  <param name="robot_description"
+     command="$(find xacro)/xacro --inorder '$(find pluto_description)/urdf/rrbot.xacro'" />
 
   <!-- Load hardware interface TODO :use URDF to do this-->
   <node ns="/pluto_motors" name="pluto_hardware_interface" pkg="pluto_motors_driver" type="node" output="screen" >
