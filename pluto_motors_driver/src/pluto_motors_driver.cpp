@@ -125,10 +125,9 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
-  // mocked actual data
-  vel[0] = left_wheel_cycles_per_sec_;
-  vel[1] = right_wheel_cycles_per_sec_;
-
+  // convert cycles per sec to angular velocity 
+  vel[0] = left_wheel_cycles_per_sec_ * M_PI * 2;
+  vel[1] = right_wheel_cycles_per_sec_ * M_PI * 2;
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
