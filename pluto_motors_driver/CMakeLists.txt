@@ -46,7 +46,7 @@ include_directories(
 )
 
 set (LIBRARIES
- #NOTRPI wiringPi
+ wiringPi
  crypt
  pthread
  rt

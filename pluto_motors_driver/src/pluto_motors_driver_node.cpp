@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
   controller_manager::ControllerManager cm(&pmd);
 
-  ros::Rate r(100);
+  ros::Rate r(10);
   ros::AsyncSpinner spinner(2);
   spinner.start();
 

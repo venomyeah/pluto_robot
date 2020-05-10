@@ -15,67 +15,47 @@
 int fg0_prev_time = millis();
 int fg0_counter = 0;
 int fg0_prev_counter = 0;
+int fg1_prev_time = millis();
+int fg1_counter = 0;
+int fg1_prev_counter = 0;
 #endif
 
-void PlutoMotorsDriver::setMotorsPowerCallback(
-    const pluto_msgs::MotorsPower &mp) {
-  auto time = ros::Time::now();
-
-#ifdef RPI
-  if (abs(mp.left_motor_power) > POWER_RANGE ||
-      abs(mp.right_motor_power) > POWER_RANGE) {
-    ROS_ERROR_STREAM("MotorsPower values outside range!");
-    return;
-  }
-
-  // Set direction
-  if (mp.left_motor_power < 0) {
-    digitalWrite(PIN_DIR0, HIGH);
-  }
-  if (mp.left_motor_power >= 0) {
-    digitalWrite(PIN_DIR0, LOW);
-  }
-  if (mp.right_motor_power < 0) {
-    digitalWrite(PIN_DIR1, LOW);
-  }
-  if (mp.right_motor_power >= 0) {
-    digitalWrite(PIN_DIR1, HIGH);
-  }
-
-  // Set Duty Cycle
-  ROS_INFO_STREAM(abs(mp.left_motor_power));
-  ROS_INFO_STREAM(abs(mp.right_motor_power));
-  ;
-  softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(mp.left_motor_power)));
-  softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(mp.right_motor_power)));
-#endif
-
-  ROS_INFO_STREAM(ros::Time::now() - time);
-}
 
 #ifdef RPI
 void fg0Feedback() {
   fg0_counter++;
-  // int cur_time = millis();
-  // int time_delta = cur_time - fg0_prev_time;
-  // fg0_prev_time = cur_time;
+}
 
-  // TODO Measure time between this and previous IRQ
-  // printf("%d\n", fg0_counter);
-  // fflush(stdout);
+void fg1Feedback() {
+  fg1_counter++;
 }
 
 void fg0FeedbackTimer() {
+  const int feedback_rate = 10;
+  ros::Rate r(feedback_rate);
+  while (ros::ok()) {
+    int fg0_counter_frozen = fg0_counter;
+    double wheel_angular_vel = feedback_rate * static_cast<double>(fg0_counter_frozen - fg0_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
+    printf("\t\t\t\t\t\t%f\n", wheel_angular_vel);
 
-  while (1) {
-
-    printf("%d\n", fg0_counter - fg0_prev_counter);
-    fflush(stdout);
-
-    fg0_prev_counter = fg0_counter;
-    delay(1000);
+    fg0_prev_counter = fg0_counter_frozen;
+    r.sleep();
   }
 }
+
+void fg1FeedbackTimer() {
+  const int feedback_rate = 10;
+  ros::Rate r(feedback_rate);
+  while (ros::ok()) {
+    int fg1_counter_frozen = fg1_counter;
+    double wheel_angular_vel = feedback_rate * static_cast<double>(fg1_counter_frozen - fg1_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
+    printf("%f\n", wheel_angular_vel);
+
+    fg1_prev_counter = fg1_counter_frozen;
+    r.sleep();
+  }
+}
+
 #endif
 
 PlutoMotorsDriver::PlutoMotorsDriver() {
@@ -104,7 +84,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
   registerInterface(&jnt_vel_interface);
 
-#ifdef NOTRPI
+#ifdef RPI
   // Setup RPi4 hardware..
 
   if (wiringPiSetup() == -1) {
@@ -120,7 +100,9 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   pinMode(PIN_PWM1, OUTPUT);
 
   // Set IRQs
-  wiringPiISR(PIN_FG0, INT_EDGE_RISING, &fg0Feedback);
+  wiringPiISR(PIN_FG0, INT_EDGE_FALLING, &fg0Feedback);
+  wiringPiISR(PIN_FG1, INT_EDGE_FALLING, &fg1Feedback);
+
 
   // Default to zero speed
   softPwmCreate(PIN_PWM0, POWER_RANGE, POWER_RANGE);
@@ -129,13 +111,15 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   softPwmWrite(PIN_PWM1, POWER_RANGE);
 
   std::thread fg0_timer(fg0FeedbackTimer);
-
   fg0_timer.detach();
+  std::thread fg1_timer(fg1FeedbackTimer);
+  fg1_timer.detach();
+
+  ROS_INFO_STREAM("WiringPi setup done.");
+
 #endif
 
-  // Start Subscriber
-  topic_sub_ = nh_.subscribe("/motors_power", 1000,
-                             &PlutoMotorsDriver::setMotorsPowerCallback, this);
+  ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
 void PlutoMotorsDriver::read(const ros::Time &time,
@@ -143,6 +127,7 @@ void PlutoMotorsDriver::read(const ros::Time &time,
   // mocked actual data
   vel[0] = cmd[0];
   vel[1] = cmd[1];
+
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
@@ -173,10 +158,11 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   }
 
   // Set Duty Cycle
-  ROS_INFO_STREAM(abs(mp.left_motor_power));
-  ROS_INFO_STREAM(abs(mp.right_motor_power));
+  //ROS_INFO_STREAM(abs(mp.left_motor_power));
+  //ROS_INFO_STREAM(abs(mp.right_motor_power));
   ;
   softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(mp.left_motor_power)));
   softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(mp.right_motor_power)));
 #endif
+
 }

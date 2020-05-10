@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 // RPI
-//#define RPI
+#define RPI //(*** ONLY ON RASPBERRY ***)
 #ifdef RPI
 #include <softPwm.h>
 #include <wiringPi.h>
@@ -30,7 +30,7 @@
 #define PIN_PWM1 22 // HW 31
 #define PIN_DIR1 23 // HW 33
 #define PIN_FG1 24  // HW 35
-#define PULSES_PER_CYCLE 45 * 6
+#define PULSES_PER_CYCLE 45 * 6 / 2.4
 #define POWER_RANGE 100
 #endif
 
@@ -39,11 +39,8 @@ class PlutoMotorsDriver : public hardware_interface::RobotHW {
 public:
   PlutoMotorsDriver();
 
-  void setMotorsPowerCallback(const pluto_msgs::MotorsPower &mp);
-
 private:
   ros::NodeHandle nh_;
-  ros::Subscriber topic_sub_;
 
   // hw interface
   hardware_interface::JointStateInterface jnt_state_interface;
