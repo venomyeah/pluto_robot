@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 // RPI
-//#define RPI //(*** ONLY ON RASPBERRY ***)
+#define RPI //(*** ONLY ON RASPBERRY ***)
 #ifdef RPI
 #include <softPwm.h>
 #include <wiringPi.h>

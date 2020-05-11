@@ -142,8 +142,8 @@ void PlutoMotorsDriver::read(const ros::Time &time,
 // real hardware
 #ifdef RPI
   // convert cycles per sec to angular velocity
-  vel[0] = left_wheel_cycles_per_sec_ * M_PI * 2;
-  vel[1] = right_wheel_cycles_per_sec_ * M_PI * 2;
+  vel[0] = ((0 < eff_cmd[0]) - (eff_cmd[0] < 0)) * left_wheel_cycles_per_sec_ * M_PI * 2;
+  vel[1] = ((0 < eff_cmd[0] - eff_cmd[0] < 0)) * right_wheel_cycles_per_sec_ * M_PI * 2;
 #endif
 }
 
@@ -159,8 +159,9 @@ void PlutoMotorsDriver::write(const ros::Time &time,
 #ifdef RPI
   if (abs(mp.left_motor_power) > POWER_RANGE ||
       abs(mp.right_motor_power) > POWER_RANGE) {
-    ROS_ERROR_STREAM("MotorsPower values outside range!");
-    return;
+    ROS_ERROR_STREAM("MotorsPower values outside range..limiting to max");
+    mp.left_motor_power = ((0 < mp.left_motor_power) - (mp.left_motor_power < 0)) * POWER_RANGE;
+    mp.right_motor_power = ((0 < mp.right_motor_power) - (mp.right_motor_power < 0)) * POWER_RANGE;
   }
 
   // Set direction
