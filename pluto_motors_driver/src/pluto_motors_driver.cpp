@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <thread>
 
+// GLOBALS
 #ifdef RPI
 int fg0_prev_time = millis();
 int fg0_counter = 0;
@@ -18,27 +19,25 @@ int fg0_prev_counter = 0;
 int fg1_prev_time = millis();
 int fg1_counter = 0;
 int fg1_prev_counter = 0;
+#endif
+
 double left_wheel_cycles_per_sec_;
 double right_wheel_cycles_per_sec_;
 
-#endif
-
-
 #ifdef RPI
-void fg0Feedback() {
-  fg0_counter++;
-}
+void fg0Feedback() { fg0_counter++; }
 
-void fg1Feedback() {
-  fg1_counter++;
-}
+void fg1Feedback() { fg1_counter++; }
 
 void fg0FeedbackTimer() {
   const int feedback_rate = 10;
   ros::Rate r(feedback_rate);
   while (ros::ok()) {
     int fg0_counter_frozen = fg0_counter;
-    left_wheel_cycles_per_sec_ = feedback_rate * static_cast<double>(fg0_counter_frozen - fg0_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
+    left_wheel_cycles_per_sec_ =
+        feedback_rate *
+        static_cast<double>(fg0_counter_frozen - fg0_prev_counter) /
+        static_cast<double>(PULSES_PER_CYCLE);
 
     fg0_prev_counter = fg0_counter_frozen;
     r.sleep();
@@ -50,7 +49,10 @@ void fg1FeedbackTimer() {
   ros::Rate r(feedback_rate);
   while (ros::ok()) {
     int fg1_counter_frozen = fg1_counter;
-    right_wheel_cycles_per_sec_ = feedback_rate * static_cast<double>(fg1_counter_frozen - fg1_prev_counter)/static_cast<double>(PULSES_PER_CYCLE);
+    right_wheel_cycles_per_sec_ =
+        feedback_rate *
+        static_cast<double>(fg1_counter_frozen - fg1_prev_counter) /
+        static_cast<double>(PULSES_PER_CYCLE);
 
     fg1_prev_counter = fg1_counter_frozen;
     r.sleep();
@@ -85,6 +87,10 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
   registerInterface(&jnt_vel_interface);
 
+// connect and register the joint effort interface
+// JointHandle jointEffortHandle(jointStateHandle, &joint_effort_command_[i]);
+// effort_joint_interface_.registerHandle(jointEffortHandle);
+
 #ifdef RPI
   // Setup RPi4 hardware..
 
@@ -103,7 +109,6 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   // Set IRQs
   wiringPiISR(PIN_FG0, INT_EDGE_FALLING, &fg0Feedback);
   wiringPiISR(PIN_FG1, INT_EDGE_FALLING, &fg1Feedback);
-
 
   // Default to zero speed
   softPwmCreate(PIN_PWM0, POWER_RANGE, POWER_RANGE);
@@ -125,7 +130,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
-  // convert cycles per sec to angular velocity 
+  // convert cycles per sec to angular velocity
   vel[0] = left_wheel_cycles_per_sec_ * M_PI * 2;
   vel[1] = right_wheel_cycles_per_sec_ * M_PI * 2;
 }
@@ -158,11 +163,10 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   }
 
   // Set Duty Cycle
-  //ROS_INFO_STREAM(abs(mp.left_motor_power));
-  //ROS_INFO_STREAM(abs(mp.right_motor_power));
+  // ROS_INFO_STREAM(abs(mp.left_motor_power));
+  // ROS_INFO_STREAM(abs(mp.right_motor_power));
   ;
   softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(mp.left_motor_power)));
   softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(mp.right_motor_power)));
 #endif
-
 }
