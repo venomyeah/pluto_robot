@@ -46,7 +46,13 @@ private:
 private:
   hardware_interface::JointStateInterface jnt_state_interface;
   hardware_interface::VelocityJointInterface jnt_vel_interface;
-  double cmd[2];
+  hardware_interface::EffortJointInterface jnt_eff_interface;
+
+  // joint commands
+  // double vel_cmd[2];
+  double eff_cmd[2];
+
+  // joint state
   double pos[2];
   double vel[2];
   double eff[2];
