@@ -136,6 +136,9 @@ void PlutoMotorsDriver::read(const ros::Time &time,
   vel[0] = sign(eff_cmd[0]) * left_wheel_cycles_per_sec_ * M_PI * 2;
   vel[1] = sign(eff_cmd[1]) * right_wheel_cycles_per_sec_ * M_PI * 2;
 #endif
+
+  vel[0] = 0.0;
+  vel[1] = 0.0;
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
