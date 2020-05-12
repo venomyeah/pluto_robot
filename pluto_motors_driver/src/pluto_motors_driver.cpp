@@ -76,17 +76,6 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
   registerInterface(&jnt_state_interface);
 
-  //  // connect and register the joint velocity interfaces
-  //  hardware_interface::JointHandle l_wheel_vel_handle(
-  //      jnt_state_interface.getHandle("left_wheel"), &vel_cmd[0]);
-  //  jnt_vel_interface.registerHandle(l_wheel_vel_handle);
-
-  //  hardware_interface::JointHandle r_wheel_vel_handle(
-  //      jnt_state_interface.getHandle("right_wheel"), &vel_cmd[1]);
-  //  jnt_vel_interface.registerHandle(r_wheel_vel_handle);
-
-  //  registerInterface(&jnt_vel_interface);
-
   // connect and register the joint effort interfaces
   hardware_interface::JointHandle l_wheel_eff_handle(
       jnt_state_interface.getHandle("left_wheel"), &eff_cmd[0]);
@@ -136,14 +125,16 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
+int PlutoMotorsDriver::sign(double val) { return (0 < val) - (val < 0); }
+
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
 // real hardware
 #ifdef RPI
   // convert cycles per sec to angular velocity
-  vel[0] = ((0 < eff_cmd[0]) - (eff_cmd[0] < 0)) * left_wheel_cycles_per_sec_ * M_PI * 2;
-  vel[1] = ((0 < eff_cmd[0] - eff_cmd[0] < 0)) * right_wheel_cycles_per_sec_ * M_PI * 2;
+  vel[0] = sign(eff_cmd[0]) * left_wheel_cycles_per_sec_ * M_PI * 2;
+  vel[1] = sign(eff_cmd[1]) * right_wheel_cycles_per_sec_ * M_PI * 2;
 #endif
 }
 
@@ -153,15 +144,15 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   pluto_msgs::MotorsPower mp;
   mp.left_motor_power = eff_cmd[0];
   mp.right_motor_power = eff_cmd[1];
-  ROS_INFO_STREAM("write: eff_cmd[0]: " << eff_cmd[0]);
+  ROS_DEBUG_STREAM("write: eff_cmd: " << eff_cmd[0] << "\t" << eff_cmd[1]);
 
 // real hardware
 #ifdef RPI
   if (abs(mp.left_motor_power) > POWER_RANGE ||
       abs(mp.right_motor_power) > POWER_RANGE) {
     ROS_ERROR_STREAM("MotorsPower values outside range..limiting to max");
-    mp.left_motor_power = ((0 < mp.left_motor_power) - (mp.left_motor_power < 0)) * POWER_RANGE;
-    mp.right_motor_power = ((0 < mp.right_motor_power) - (mp.right_motor_power < 0)) * POWER_RANGE;
+    mp.left_motor_power = sign(mp.left_motor_power) * POWER_RANGE;
+    mp.right_motor_power = sign(mp.right_motor_power) * POWER_RANGE;
   }
 
   // Set direction

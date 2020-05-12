@@ -9,11 +9,13 @@ pluto_motors:
     type: effort_controllers/JointVelocityController
     joint: left_wheel
     pid:
-      p: 3.0
+      p: 2.0
+      i: 1.0
 
   # Position Controllers
   right_wheel_velocity_controller:
     type: effort_controllers/JointVelocityController
     joint: right_wheel
     pid:
-      p: 3.0
+      p: 2.0
+      i: 1.0

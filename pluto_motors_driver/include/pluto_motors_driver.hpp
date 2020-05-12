@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 // RPI
-#define RPI //(*** ONLY ON RASPBERRY ***)
+//#define RPI //(*** ONLY ON RASPBERRY ***)
 #ifdef RPI
 #include <softPwm.h>
 #include <wiringPi.h>
@@ -56,6 +56,9 @@ private:
   double pos[2];
   double vel[2];
   double eff[2];
+
+  // helpers
+  static int sign(double val);
 
 public:
   void read(const ros::Time &time, const ros::Duration &period);
