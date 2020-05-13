@@ -77,15 +77,23 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   registerInterface(&jnt_state_interface);
 
   // connect and register the joint effort interfaces
-  hardware_interface::JointHandle l_wheel_eff_handle(
+  l_wheel_eff_handle_ = hardware_interface::JointHandle(
       jnt_state_interface.getHandle("left_wheel"), &eff_cmd[0]);
-  jnt_eff_interface.registerHandle(l_wheel_eff_handle);
+  jnt_eff_interface.registerHandle(l_wheel_eff_handle_);
 
-  hardware_interface::JointHandle r_wheel_eff_handle(
+  r_wheel_eff_handle_ = hardware_interface::JointHandle(
       jnt_state_interface.getHandle("right_wheel"), &eff_cmd[1]);
-  jnt_eff_interface.registerHandle(r_wheel_eff_handle);
+  jnt_eff_interface.registerHandle(r_wheel_eff_handle_);
 
   registerInterface(&jnt_eff_interface);
+
+  // subscribe to topics
+  l_vel_setpoint_sub_ =
+      nh_.subscribe("/pluto_motors/left_wheel_velocity_controller/command", 1,
+                    &PlutoMotorsDriver::leftVelSetPointCb, this);
+  r_vel_setpoint_sub_ =
+      nh_.subscribe("/pluto_motors/right_wheel_velocity_controller/command", 1,
+                    &PlutoMotorsDriver::rightVelSetPointCb, this);
 
 // real hardware
 #ifdef RPI
@@ -125,6 +133,16 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
+// setpoints
+void PlutoMotorsDriver::leftVelSetPointCb(const std_msgs::Float64 &set_point) {
+  l_vel_set_point_ = set_point.data;
+}
+
+void PlutoMotorsDriver::rightVelSetPointCb(const std_msgs::Float64 &set_point) {
+  r_vel_set_point_ = set_point.data;
+}
+
+// helpers
 int PlutoMotorsDriver::sign(double val) { return (0 < val) - (val < 0); }
 
 void PlutoMotorsDriver::read(const ros::Time &time,
@@ -133,8 +151,13 @@ void PlutoMotorsDriver::read(const ros::Time &time,
 // real hardware
 #ifdef RPI
   // convert cycles per sec to angular velocity
-  vel[0] = sign(eff_cmd[0]) * left_wheel_cycles_per_sec_ * M_PI * 2;
-  vel[1] = sign(eff_cmd[1]) * right_wheel_cycles_per_sec_ * M_PI * 2;
+  vel[0] = sign(l_vel_set_point_) * left_wheel_cycles_per_sec_ * M_PI * 2;
+  vel[1] = sign(r_vel_set_point_) * right_wheel_cycles_per_sec_ * M_PI * 2;
+#endif
+
+#ifndef RPI
+  vel[0] = l_vel_set_point_;
+  vel[1] = r_vel_set_point_;
 #endif
 }
 

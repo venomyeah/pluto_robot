@@ -12,13 +12,16 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
 
+// msgs
+#include <std_msgs/Float64.h>
+
 // generic
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 // RPI
-#define RPI //(*** ONLY ON RASPBERRY ***)
+//#define RPI //(*** ONLY ON RASPBERRY ***)
 #ifdef RPI
 #include <softPwm.h>
 #include <wiringPi.h>
@@ -48,6 +51,9 @@ private:
   hardware_interface::VelocityJointInterface jnt_vel_interface;
   hardware_interface::EffortJointInterface jnt_eff_interface;
 
+  hardware_interface::JointHandle l_wheel_eff_handle_;
+  hardware_interface::JointHandle r_wheel_eff_handle_;
+
   // joint commands
   // double vel_cmd[2];
   double eff_cmd[2];
@@ -59,6 +65,14 @@ private:
 
   // helpers
   static int sign(double val);
+
+  // setpoints
+  ros::Subscriber l_vel_setpoint_sub_;
+  ros::Subscriber r_vel_setpoint_sub_;
+  double l_vel_set_point_;
+  double r_vel_set_point_;
+  void leftVelSetPointCb(const std_msgs::Float64 &set_point);
+  void rightVelSetPointCb(const std_msgs::Float64 &set_point);
 
 public:
   void read(const ros::Time &time, const ros::Duration &period);
