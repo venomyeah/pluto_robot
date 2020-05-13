@@ -23,6 +23,8 @@ public:
 private:
   ros::Subscriber joy_sub_;
   ros::Publisher motors_power_pub_;
+  ros::Publisher left_wheel_pub_;
+  ros::Publisher right_wheel_pub_;
 
   void joyCallback(const sensor_msgs::Joy joy_data);
 };

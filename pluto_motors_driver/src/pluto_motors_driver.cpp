@@ -130,8 +130,20 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
 #endif
 
+  eff_cmd[0] = 0;
+  prev_eff_cmd[0] = eff_cmd[0];
+  eff_cmd_count[0] = 0;
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
+
+PlutoMotorsDriver::~PlutoMotorsDriver() {
+  // Default to zero speed
+  softPwmCreate(PIN_PWM0, POWER_RANGE, POWER_RANGE);
+  softPwmWrite(PIN_PWM0, POWER_RANGE);
+  softPwmCreate(PIN_PWM1, POWER_RANGE, POWER_RANGE);
+  softPwmWrite(PIN_PWM1, POWER_RANGE);
+}
+
 
 // setpoints
 void PlutoMotorsDriver::leftVelSetPointCb(const std_msgs::Float64 &set_point) {
@@ -143,16 +155,30 @@ void PlutoMotorsDriver::rightVelSetPointCb(const std_msgs::Float64 &set_point) {
 }
 
 // helpers
-int PlutoMotorsDriver::sign(double val) { return (0 < val) - (val < 0); }
+int PlutoMotorsDriver::sign(double val) { return (0 <= val) - (val < 0); }
 
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
+
 // real hardware
 #ifdef RPI
   // convert cycles per sec to angular velocity
-  vel[0] = sign(l_vel_set_point_) * left_wheel_cycles_per_sec_ * M_PI * 2;
+  if (sign(eff_cmd[0]) != sign(prev_eff_cmd[0])){
+    eff_cmd_count[0] = 0;
+  } else {
+    eff_cmd_count[0]++;	  
+  }
+  if (eff_cmd_count[0] > 10){
+    eff_cmd_count[0] = 10;
+  }
+
+  if (eff_cmd_count[0] == 10) {
+    vel[0] = sign(eff_cmd[0]) * left_wheel_cycles_per_sec_ * M_PI * 2;
+  }
+
   vel[1] = sign(r_vel_set_point_) * right_wheel_cycles_per_sec_ * M_PI * 2;
+
 #endif
 
 #ifndef RPI
@@ -164,10 +190,11 @@ void PlutoMotorsDriver::read(const ros::Time &time,
 void PlutoMotorsDriver::write(const ros::Time &time,
                               const ros::Duration &period) {
 
+//  if (fabs(eff_cmd[0]) < 20 ) return;	
+     
   pluto_msgs::MotorsPower mp;
   mp.left_motor_power = eff_cmd[0];
   mp.right_motor_power = eff_cmd[1];
-  ROS_DEBUG_STREAM("write: eff_cmd: " << eff_cmd[0] << "\t" << eff_cmd[1]);
 
 // real hardware
 #ifdef RPI
@@ -199,4 +226,5 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(mp.left_motor_power)));
   softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(mp.right_motor_power)));
 #endif
+  prev_eff_cmd[0] = eff_cmd[0];
 }
