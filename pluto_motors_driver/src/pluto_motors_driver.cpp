@@ -21,8 +21,7 @@ int fg0_prev_counter = 0;
 int fg1_prev_time = millis();
 int fg1_counter = 0;
 int fg1_prev_counter = 0;
-double left_wheel_cycles_per_sec_;
-double right_wheel_cycles_per_sec_;
+double g_wheel_cycles_per_sec[2];
 #endif
 
 #ifdef RPI
@@ -35,7 +34,7 @@ void fg0FeedbackTimer() {
   ros::Rate r(feedback_rate);
   while (ros::ok()) {
     int fg0_counter_frozen = fg0_counter;
-    left_wheel_cycles_per_sec_ =
+    g_wheel_cycles_per_sec[LEFT_WHEEL_INDEX] =
         feedback_rate *
         static_cast<double>(fg0_counter_frozen - fg0_prev_counter) /
         static_cast<double>(PULSES_PER_CYCLE);
@@ -50,7 +49,7 @@ void fg1FeedbackTimer() {
   ros::Rate r(feedback_rate);
   while (ros::ok()) {
     int fg1_counter_frozen = fg1_counter;
-    right_wheel_cycles_per_sec_ =
+    g_wheel_cycles_per_sec[RIGHT_WHEEL_INDEX] =
         feedback_rate *
         static_cast<double>(fg1_counter_frozen - fg1_prev_counter) /
         static_cast<double>(PULSES_PER_CYCLE);
@@ -67,22 +66,25 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
   // connect and register the joint state interface
   hardware_interface::JointStateHandle l_wheel_state_handle(
-      "left_wheel", &pos[0], &vel[0], &eff[0]);
+      "left_wheel", &pos[LEFT_WHEEL_INDEX], &vel[LEFT_WHEEL_INDEX],
+      &eff[LEFT_WHEEL_INDEX]);
   jnt_state_interface.registerHandle(l_wheel_state_handle);
 
   hardware_interface::JointStateHandle r_wheel_state_handle(
-      "right_wheel", &pos[1], &vel[1], &eff[1]);
+      "right_wheel", &pos[RIGHT_WHEEL_INDEX], &vel[RIGHT_WHEEL_INDEX],
+      &eff[RIGHT_WHEEL_INDEX]);
   jnt_state_interface.registerHandle(r_wheel_state_handle);
 
   registerInterface(&jnt_state_interface);
 
   // connect and register the joint effort interfaces
   l_wheel_eff_handle_ = hardware_interface::JointHandle(
-      jnt_state_interface.getHandle("left_wheel"), &eff_cmd[0]);
+      jnt_state_interface.getHandle("left_wheel"), &eff_cmd[LEFT_WHEEL_INDEX]);
   jnt_eff_interface.registerHandle(l_wheel_eff_handle_);
 
   r_wheel_eff_handle_ = hardware_interface::JointHandle(
-      jnt_state_interface.getHandle("right_wheel"), &eff_cmd[1]);
+      jnt_state_interface.getHandle("right_wheel"),
+      &eff_cmd[RIGHT_WHEEL_INDEX]);
   jnt_eff_interface.registerHandle(r_wheel_eff_handle_);
 
   registerInterface(&jnt_eff_interface);
@@ -130,9 +132,10 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
 #endif
 
-  eff_cmd[0] = 0;
-  prev_eff_cmd[0] = eff_cmd[0];
-  eff_cmd_count[0] = 0;
+  memset(eff_cmd, 0, sizeof(eff_cmd));
+  memset(prev_eff_cmd, 0, sizeof(prev_eff_cmd));
+  memset(eff_cmd_count, 0, sizeof(eff_cmd_count));
+
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
@@ -143,7 +146,6 @@ PlutoMotorsDriver::~PlutoMotorsDriver() {
   softPwmCreate(PIN_PWM1, POWER_RANGE, POWER_RANGE);
   softPwmWrite(PIN_PWM1, POWER_RANGE);
 }
-
 
 // setpoints
 void PlutoMotorsDriver::leftVelSetPointCb(const std_msgs::Float64 &set_point) {
@@ -160,24 +162,25 @@ int PlutoMotorsDriver::sign(double val) { return (0 <= val) - (val < 0); }
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
-
 // real hardware
 #ifdef RPI
   // convert cycles per sec to angular velocity
-  if (sign(eff_cmd[0]) != sign(prev_eff_cmd[0])){
-    eff_cmd_count[0] = 0;
-  } else {
-    eff_cmd_count[0]++;	  
-  }
-  if (eff_cmd_count[0] > 10){
-    eff_cmd_count[0] = 10;
-  }
+  for (size_t i = 0; i < 2; i++) {
 
-  if (eff_cmd_count[0] == 10) {
-    vel[0] = sign(eff_cmd[0]) * left_wheel_cycles_per_sec_ * M_PI * 2;
-  }
+    // update count
+    if (sign(eff_cmd[i]) != sign(prev_eff_cmd[i])) {
+      eff_cmd_count[i] = 0;
+    } else {
+      eff_cmd_count[i]++;
+    }
+    if (eff_cmd_count[i] > FEEDBACK_SIGN_MANAGEMENT_MAX_WINDOW) {
+      eff_cmd_count[i] = FEEDBACK_SIGN_MANAGEMENT_MAX_WINDOW;
+    }
 
-  vel[1] = sign(r_vel_set_point_) * right_wheel_cycles_per_sec_ * M_PI * 2;
+    if (eff_cmd_count[i] == FEEDBACK_SIGN_MANAGEMENT_MAX_WINDOW) {
+      vel[i] = sign(eff_cmd[i]) * g_wheel_cycles_per_sec[i] * M_PI * 2;
+    }
+  }
 
 #endif
 
@@ -190,11 +193,9 @@ void PlutoMotorsDriver::read(const ros::Time &time,
 void PlutoMotorsDriver::write(const ros::Time &time,
                               const ros::Duration &period) {
 
-//  if (fabs(eff_cmd[0]) < 20 ) return;	
-     
   pluto_msgs::MotorsPower mp;
-  mp.left_motor_power = eff_cmd[0];
-  mp.right_motor_power = eff_cmd[1];
+  mp.left_motor_power = eff_cmd[LEFT_WHEEL_INDEX];
+  mp.right_motor_power = eff_cmd[RIGHT_WHEEL_INDEX];
 
 // real hardware
 #ifdef RPI
@@ -220,11 +221,13 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   }
 
   // Set Duty Cycle
-  // ROS_INFO_STREAM(abs(mp.left_motor_power));
-  // ROS_INFO_STREAM(abs(mp.right_motor_power));
+  // ROS_DEBUG_STREAM(abs(mp.left_motor_power));
+  // ROS_DEBUG_STREAM(abs(mp.right_motor_power));
   ;
   softPwmWrite(PIN_PWM0, (POWER_RANGE - abs(mp.left_motor_power)));
   softPwmWrite(PIN_PWM1, (POWER_RANGE - abs(mp.right_motor_power)));
 #endif
-  prev_eff_cmd[0] = eff_cmd[0];
+
+  prev_eff_cmd[LEFT_WHEEL_INDEX] = eff_cmd[LEFT_WHEEL_INDEX];
+  prev_eff_cmd[RIGHT_WHEEL_INDEX] = eff_cmd[RIGHT_WHEEL_INDEX];
 }
