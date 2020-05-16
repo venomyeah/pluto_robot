@@ -140,11 +140,13 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 }
 
 PlutoMotorsDriver::~PlutoMotorsDriver() {
+#ifdef RPI
   // Default to zero speed
   softPwmCreate(PIN_PWM0, POWER_RANGE, POWER_RANGE);
   softPwmWrite(PIN_PWM0, POWER_RANGE);
   softPwmCreate(PIN_PWM1, POWER_RANGE, POWER_RANGE);
   softPwmWrite(PIN_PWM1, POWER_RANGE);
+#endif
 }
 
 // setpoints

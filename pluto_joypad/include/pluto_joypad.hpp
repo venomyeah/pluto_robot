@@ -10,6 +10,9 @@
 // ros
 #include <sensor_msgs/Joy.h>
 
+// messages
+#include <std_msgs/Float64.h>
+
 // general
 #include <stdint.h>
 #include <stdio.h>

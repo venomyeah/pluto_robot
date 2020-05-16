@@ -21,7 +21,7 @@
 #include <stdlib.h>
 
 // RPI
-#define RPI //(*** ONLY ON RASPBERRY ***)
+//#define RPI //(*** ONLY ON RASPBERRY ***)
 #ifdef RPI
 #include <softPwm.h>
 #include <wiringPi.h>
@@ -35,11 +35,12 @@
 #define PIN_FG1 24  // HW 35
 #define PULSES_PER_CYCLE 45 * 6 / 2.4
 #define POWER_RANGE 100
+#endif
+
 #define FREQUENCY 10
 #define FEEDBACK_SIGN_MANAGEMENT_MAX_WINDOW 10
 #define LEFT_WHEEL_INDEX 0
 #define RIGHT_WHEEL_INDEX 1
-#endif
 
 class PlutoMotorsDriver : public hardware_interface::RobotHW {
 
@@ -82,5 +83,5 @@ private:
 
 public:
   void read(const ros::Time &time, const ros::Duration &period);
-  void write(const ros::Time &time, const ros::Duration &period)
+  void write(const ros::Time &time, const ros::Duration &period);
 };
