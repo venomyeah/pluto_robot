@@ -2,13 +2,7 @@
 
 <robot name="pluto">
 
-  <!-- Materials -->
-  <material name="wood">
-    <color rgba="1 0.973 0.863 1"/>
-  </material>
-  <material name="rubber">
-    <color rgba="0 0 0 1"/>
-  </material>
+
 
   <!-- Base -->
   <link name="base_link">

@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!-- Revolute-Revolute Manipulator -->
+<robot name="pluto" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants for robot dimensions -->
+  <xacro:property name="left_wheel_offset" value="3.1415926535897931"/>
+  <xacro:property name="right_wheel_offset" value="3.1415926535897931"/>
+  <xacro:property name="back_castor_offset" value="3.1415926535897931"/>
+  <xacro:property name="front_castor_offset" value="3.1415926535897931"/>
+
+  <!-- Include xacros -->
+<!--  <xacro:include filename="$(find pluto_description)/urdf/materials.xacro" />-->-->
+  <xacro:include filename="$(find pluto_description)/urdf/wheel.xacro" />
+  <xacro:include filename="$(find pluto_description)/urdf/castor.xacro" />
+
+
+  <!-- Materials -->
+  <material name="very_light_wood">
+    <color rgba="1 0.983 0.943 1"/>
+  </material>
+  <material name="light_wood">
+    <color rgba="1 0.973 0.863 1"/>
+  </material>
+  <material name="pcb">
+    <color rgba="0 0.6 0 1"/>
+  </material>
+  <material name="rubber">
+    <color rgba="0 0 0 1"/>
+  </material>
+
+
+  <!-- Used for fixing robot to Gazebo 'base_link' -->
+  <link name="world"/>
+
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+
+  <!-- Base -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="0.012" radius="0.25"/>
+      </geometry>
+      <material name="light_wood"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.012" radius="0.25"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Level 1 -->
+  <joint name="level_1_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="level_1"/>
+    <origin xyz="0 0 0.042" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <link name="level_1">
+    <visual>
+      <geometry>
+        <box size="0.32 0.32 0.004"/>
+      </geometry>
+      <material name="very_light_wood"/>
+    </visual>
+  </link>
+
+  <!-- Raspberry -->
+  <joint name="raspberry_joint" type="fixed">
+    <parent link="level_1"/>
+    <child link="raspberry"/>
+    <origin xyz="-0.117 -0.054 0.01" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <link name="raspberry">
+    <visual>
+      <geometry>
+        <box size="0.055 0.088 0.02"/>
+      </geometry>
+      <material name="pcb"/>
+    </visual>
+  </link>
+
+
+
+  <!-- Left Wheel -->
+  <xacro:wheel y_offset_from_base="0.188" prefix="left"/>
+
+  <!-- Right Wheel -->
+  <xacro:wheel y_offset_from_base="-0.188" prefix="right"/>
+
+  <!-- Back Castor -->
+  <xacro:castor x_offset_from_base="-0.20" prefix="back"/>
+
+  <!-- Front Castor -->
+  <xacro:castor x_offset_from_base="0.20" prefix="front"/>
+
+</robot>
