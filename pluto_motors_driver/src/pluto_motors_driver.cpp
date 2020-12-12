@@ -114,8 +114,7 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   cmd << "%VEL L" << vel_cmd[LEFT_WHEEL_INDEX] << " "
       << "R" << vel_cmd[RIGHT_WHEEL_INDEX] << "$#";
 
-  std::cout << "SERIAL VEL " << vel_cmd[LEFT_WHEEL_INDEX] << " "
-            << vel_cmd[RIGHT_WHEEL_INDEX] << " CMD: " << cmd.str() << std::endl;
+  std::cout << " CMD: " << cmd.str() << std::endl;
 
 // real hardware
 #ifdef RPI

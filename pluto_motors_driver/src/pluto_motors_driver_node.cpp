@@ -6,7 +6,7 @@
 #include "ros/ros.h"
 #include <controller_manager/controller_manager.h>
 #include <pluto_motors_driver.hpp>
-#define FREQUENCY 1
+#define FREQUENCY 10
 
 int main(int argc, char **argv) {
   ros::init(argc, argv, "pluto_motors_driver_node");
