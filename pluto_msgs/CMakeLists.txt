@@ -19,10 +19,10 @@ find_package(catkin REQUIRED
 #    FILES
 #)
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
+#generate_messages(
+#  DEPENDENCIES
+#  std_msgs
+#)
 
 ###################################
 ## catkin specific configuration ##
