@@ -63,7 +63,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 #ifdef RPI
   if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
     fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
-    return 1;
+    return;
   }
 #endif
 
