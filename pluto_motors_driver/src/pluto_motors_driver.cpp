@@ -77,7 +77,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 PlutoMotorsDriver::~PlutoMotorsDriver() {
 #ifdef RPI
   // Default to zero speed
-  // TODO
+  serialClose(serial_fd);
 #endif
 }
 
