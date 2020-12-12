@@ -47,6 +47,7 @@ include_directories(
 
 set (LIBRARIES
 # wiringPi
+# wiringSerial
  crypt
  pthread
  rt

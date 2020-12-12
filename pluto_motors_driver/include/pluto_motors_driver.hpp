@@ -23,26 +23,14 @@
 // RPI
 //#define RPI //(*** ONLY ON RASPBERRY ***)
 #ifdef RPI
-#include <softPwm.h>
-#include <wiringPi.h>
-#define PWM0 26
-#define PWM1 23
-#define PIN_PWM0 26 // HW 32
-#define PIN_DIR0 27 // HW 36
-#define PIN_FG0 28  // HW 38
-#define PIN_PWM1 22 // HW 31
-#define PIN_DIR1 23 // HW 33
-#define PIN_FG1 24  // HW 35
-#define PULSES_PER_CYCLE 45 * 6 / 2.4
-#define POWER_RANGE 100
+#include <wiringSerial.h>
 #endif
 
-#define FREQUENCY 10
-#define FEEDBACK_SIGN_MANAGEMENT_MAX_WINDOW 10
-#define LEFT_WHEEL_INDEX 0
-#define RIGHT_WHEEL_INDEX 1
-
 class PlutoMotorsDriver : public hardware_interface::RobotHW {
+
+public:
+  static const int LEFT_WHEEL_INDEX;
+  static const int RIGHT_WHEEL_INDEX;
 
 public:
   PlutoMotorsDriver();
@@ -57,13 +45,13 @@ private:
   hardware_interface::VelocityJointInterface jnt_vel_interface;
   hardware_interface::EffortJointInterface jnt_eff_interface;
 
-  hardware_interface::JointHandle l_wheel_eff_handle_;
-  hardware_interface::JointHandle r_wheel_eff_handle_;
+  hardware_interface::JointHandle l_wheel_vel_handle_;
+  hardware_interface::JointHandle r_wheel_vel_handle_;
 
   // joint commands
-  double eff_cmd[2];
-  double prev_eff_cmd[2];
-  unsigned int eff_cmd_count[2];
+  double vel_cmd[2];
+  double prev_vel_cmd[2];
+  unsigned int vel_cmd_count[2];
 
   // joint state
   double pos[2];
