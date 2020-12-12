@@ -12,14 +12,12 @@ find_package(catkin REQUIRED
 # find_package(Boost REQUIRED COMPONENTS system)
 
 ## Messages and services
-add_service_files(
-  FILES
-  SetMotorsPower.srv
-)
-add_message_files(
-    FILES
-    MotorsPower.msg
-)
+#add_service_files(
+#  FILES
+#)
+#add_message_files(
+#    FILES
+#)
 
 generate_messages(
   DEPENDENCIES

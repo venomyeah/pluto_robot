@@ -8,8 +8,6 @@
 
   <license>GPLv3</license>
 
-  <depend>pluto_msgs</depend>
-
   <buildtool_depend>catkin</buildtool_depend>
 
   <export>

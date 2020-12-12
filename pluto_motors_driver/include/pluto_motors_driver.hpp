@@ -3,9 +3,6 @@
  * Vittorio Lumare venom@venom.it
  */
 
-#include <pluto_msgs/MotorsPower.h>
-#include <pluto_msgs/SetMotorsPower.h>
-
 // ros
 #include <hardware_interface/hardware_interface.h>
 #include <hardware_interface/joint_command_interface.h>
