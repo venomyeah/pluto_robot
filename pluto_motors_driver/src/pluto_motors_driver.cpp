@@ -99,6 +99,8 @@ void PlutoMotorsDriver::read(const ros::Time &time,
 // real hardware
 #ifdef RPI
   // TODO read vel from serial
+  vel[0] = l_vel_set_point_;
+  vel[1] = r_vel_set_point_;
 #endif
 
 #ifndef RPI
@@ -112,7 +114,7 @@ void PlutoMotorsDriver::write(const ros::Time &time,
 
   std::stringstream cmd;
   cmd << "%VEL L" << vel_cmd[LEFT_WHEEL_INDEX] << " "
-      << "R" << vel_cmd[RIGHT_WHEEL_INDEX] << "$#";
+      << "R" << vel_cmd[RIGHT_WHEEL_INDEX] << "$#\n";
 
   std::cout << " CMD: " << cmd.str() << std::endl;
 
