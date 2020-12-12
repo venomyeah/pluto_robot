@@ -17,13 +17,17 @@ void PlutoJoypad::joyCallback(const sensor_msgs::Joy joy_data) {
   auto left = joy_data.axes[1];
   auto right = joy_data.axes[4];
 
+  // noise removal
   left = fabs(left) < 0.1 ? 0.0 : left;
   right = fabs(right) < 0.1 ? 0.0 : right;
 
+  // conversion
   std_msgs::Float64 left_cmd;
-  left_cmd.data = left * 30;
+  left_cmd.data = -left * 5;
   std_msgs::Float64 right_cmd;
-  right_cmd.data = right * 30;
+  right_cmd.data = right * 5;
+
+  // pub
   left_wheel_pub_.publish(left_cmd);
   right_wheel_pub_.publish(right_cmd);
 }
