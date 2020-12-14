@@ -18,8 +18,7 @@
 #include <stdlib.h>
 
 // RPI
-#define RPI //(*** ONLY ON RASPBERRY ***)
-#ifdef RPI
+#ifdef TARGET_LINUX_ARM
 #include <wiringSerial.h>
 #endif
 
