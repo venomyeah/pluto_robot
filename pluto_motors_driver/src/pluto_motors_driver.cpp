@@ -14,14 +14,14 @@
 #include <unistd.h>
 
 // RPI
-#ifdef TARGET_LINUX_ARM
+#ifdef __arm__
 #include <wiringSerial.h>
 #endif
 
 // GLOBALS
 
 // real hardware
-#ifdef TARGET_LINUX_ARM
+#ifdef __arm__
 int serial_fd;
 #endif
 
@@ -74,7 +74,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
                     &PlutoMotorsDriver::rightVelSetPointCb, this);
 
 // real hardware
-#ifdef TARGET_LINUX_ARM
+#ifdef __arm__
   // if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
   //   fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
   //   return;
@@ -89,7 +89,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 }
 
 PlutoMotorsDriver::~PlutoMotorsDriver() {
-#ifdef TARGET_LINUX_ARM
+#ifdef __arm__
   // Default to zero speed
   // serialPuts(serial_fd, "%0 0#");
   // serialClose(serial_fd);
@@ -112,7 +112,7 @@ void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
 // real hardware
-#ifdef TARGET_LINUX_ARM
+#ifdef __arm__
   // TODO read vel from serial
   vel[0] = l_vel_set_point_;
   vel[1] = r_vel_set_point_;
@@ -134,7 +134,7 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   std::cout << "CMD: " << cmd.str() << std::endl;
 
 // real hardware
-#ifdef TARGET_LINUX_ARM
+#ifdef __arm__
   serialTx(cmd.str());
 #endif
 
