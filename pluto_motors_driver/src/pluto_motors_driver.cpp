@@ -39,6 +39,10 @@ void serialTx(const std::string &str) {
 
 PlutoMotorsDriver::PlutoMotorsDriver() {
 
+#ifdef __RPI__
+  ROS_INFO_STREAM("Raspberry Pi Detected!");
+#endif
+
   // setup hardware interface..
 
   // connect and register the joint state interface
