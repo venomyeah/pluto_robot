@@ -10,17 +10,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <thread>
+#include <unistd.h>
+#include <termios.h>
 
 // GLOBALS
 
 // real hardware
-#ifdef RPI
+#ifdef TARGET_LINUX_ARM
 int serial_fd;
 #endif
 
 // Constants
 const int PlutoMotorsDriver::LEFT_WHEEL_INDEX = 0;
 const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
+
+void serialTx(const std::string &str)	  
+{
+  //write(serial_fd, str.c_str(), sizeof(str.c_str())/sizeof(char));
+  std::stringstream ss;
+  ss << "echo \"" << str << "\" > /dev/ttyACM0"; 
+  system(ss.str().c_str());
+}
 
 PlutoMotorsDriver::PlutoMotorsDriver() {
 
@@ -60,11 +70,11 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
                     &PlutoMotorsDriver::rightVelSetPointCb, this);
 
 // real hardware
-#ifdef RPI
-  if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
-    fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
-    return;
-  }
+#ifdef TARGET_LINUX_ARM
+ // if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
+ //   fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
+ //   return;
+ // }
 #endif
 
   memset(vel_cmd, 0, sizeof(vel_cmd));
@@ -75,9 +85,10 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 }
 
 PlutoMotorsDriver::~PlutoMotorsDriver() {
-#ifdef RPI
+#ifdef TARGET_LINUX_ARM
   // Default to zero speed
-  serialClose(serial_fd);
+  //serialPuts(serial_fd, "%0 0#");
+  //serialClose(serial_fd);
 #endif
 }
 
@@ -97,13 +108,13 @@ void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
 // real hardware
-#ifdef RPI
+#ifdef TARGET_LINUX_ARM
   // TODO read vel from serial
   vel[0] = l_vel_set_point_;
   vel[1] = r_vel_set_point_;
 #endif
 
-#ifndef RPI
+#ifndef TARGET_LINUX_ARM
   vel[0] = l_vel_set_point_;
   vel[1] = r_vel_set_point_;
 #endif
@@ -113,14 +124,14 @@ void PlutoMotorsDriver::write(const ros::Time &time,
                               const ros::Duration &period) {
 
   std::stringstream cmd;
-  cmd << "%VEL L" << vel_cmd[LEFT_WHEEL_INDEX] << " "
-      << "R" << vel_cmd[RIGHT_WHEEL_INDEX] << "$#\n";
+  cmd << "%" << vel_cmd[LEFT_WHEEL_INDEX] << " "
+      << vel_cmd[RIGHT_WHEEL_INDEX] << "#";
 
-  std::cout << " CMD: " << cmd.str() << std::endl;
+  std::cout << "CMD: " << cmd.str() << std::endl;
 
 // real hardware
-#ifdef RPI
-  serialPuts(serial_fd, cmd.str().c_str());
+#ifdef TARGET_LINUX_ARM
+  serialTx(cmd.str());
 #endif
 
   prev_vel_cmd[LEFT_WHEEL_INDEX] = vel_cmd[LEFT_WHEEL_INDEX];
