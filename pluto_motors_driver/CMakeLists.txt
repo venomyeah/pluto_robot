@@ -45,11 +45,17 @@ include_directories(
 )
 
 set (LIBRARIES
- wiringPi
  crypt
  pthread
  rt
 )
+
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
+  set (LIBRARIES
+   $LIBRARIES
+   wiringPi
+  )
+endif()
 
 set (SRC
  src/pluto_motors_driver_node.cpp

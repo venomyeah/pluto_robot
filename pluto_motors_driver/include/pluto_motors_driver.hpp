@@ -17,11 +17,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// RPI
-#ifdef TARGET_LINUX_ARM
-#include <wiringSerial.h>
-#endif
-
 class PlutoMotorsDriver : public hardware_interface::RobotHW {
 
 public:

@@ -9,9 +9,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <termios.h>
 #include <thread>
 #include <unistd.h>
-#include <termios.h>
+
+// RPI
+#ifdef TARGET_LINUX_ARM
+#include <wiringSerial.h>
+#endif
 
 // GLOBALS
 
@@ -24,11 +29,10 @@ int serial_fd;
 const int PlutoMotorsDriver::LEFT_WHEEL_INDEX = 0;
 const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
 
-void serialTx(const std::string &str)	  
-{
-  //write(serial_fd, str.c_str(), sizeof(str.c_str())/sizeof(char));
+void serialTx(const std::string &str) {
+  // write(serial_fd, str.c_str(), sizeof(str.c_str())/sizeof(char));
   std::stringstream ss;
-  ss << "echo \"" << str << "\" > /dev/ttyACM0"; 
+  ss << "echo \"" << str << "\" > /dev/ttyACM0";
   system(ss.str().c_str());
 }
 
@@ -71,10 +75,10 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
 // real hardware
 #ifdef TARGET_LINUX_ARM
- // if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
- //   fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
- //   return;
- // }
+  // if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
+  //   fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
+  //   return;
+  // }
 #endif
 
   memset(vel_cmd, 0, sizeof(vel_cmd));
@@ -87,8 +91,8 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 PlutoMotorsDriver::~PlutoMotorsDriver() {
 #ifdef TARGET_LINUX_ARM
   // Default to zero speed
-  //serialPuts(serial_fd, "%0 0#");
-  //serialClose(serial_fd);
+  // serialPuts(serial_fd, "%0 0#");
+  // serialClose(serial_fd);
 #endif
 }
 
@@ -124,8 +128,8 @@ void PlutoMotorsDriver::write(const ros::Time &time,
                               const ros::Duration &period) {
 
   std::stringstream cmd;
-  cmd << "%" << vel_cmd[LEFT_WHEEL_INDEX] << " "
-      << vel_cmd[RIGHT_WHEEL_INDEX] << "#";
+  cmd << "%" << vel_cmd[LEFT_WHEEL_INDEX] << " " << vel_cmd[RIGHT_WHEEL_INDEX]
+      << "#";
 
   std::cout << "CMD: " << cmd.str() << std::endl;
 
