@@ -48,14 +48,8 @@ set (LIBRARIES
  crypt
  pthread
  rt
+ wiringPi
 )
-
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
-  set (LIBRARIES
-   $LIBRARIES
-   wiringPi
-  )
-endif()
 
 set (SRC
  src/pluto_motors_driver_node.cpp

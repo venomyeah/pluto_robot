@@ -80,10 +80,10 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 
 // real hardware
 #ifdef __RPI__
-  // if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
-  //   fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
-  //   return;
-  // }
+  if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
+     fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
+     return;
+  }
 #endif
 
   memset(vel_cmd, 0, sizeof(vel_cmd));
@@ -96,8 +96,8 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
 PlutoMotorsDriver::~PlutoMotorsDriver() {
 #ifdef __RPI__
   // Default to zero speed
-  // serialPuts(serial_fd, "%0 0#");
-  // serialClose(serial_fd);
+  serialPuts(serial_fd, "%0 0#");
+  serialClose(serial_fd);
 #endif
 }
 
