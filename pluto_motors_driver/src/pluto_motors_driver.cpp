@@ -31,7 +31,7 @@ const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
 
 bool serialOpen() {
 
-  system("stty -F /dev/ttyUSB0 cs8 57600 ignbrk -brkint -icrnl -imaxbel -opost "
+  system("stty -F /dev/ttyACM0 cs8 57600 ignbrk -brkint -icrnl -imaxbel -opost "
          "-onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke "
          "noflsh -ixon -crtscts");
 
