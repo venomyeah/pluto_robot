@@ -32,29 +32,33 @@ const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
 bool serialOpen() {
 
   struct termios tio;
-  // struct termios2 tio2;
+
   std::string deviceName = "/dev/ttyACM0";
   auto baud = 57600;
   serial_fd = open(deviceName.c_str(), O_RDWR | O_NOCTTY /* | O_NONBLOCK */);
 
   if (serial_fd < 0)
     return false;
-  tio.c_cflag = CS8 | CLOCAL | CREAD;
+
+  if (tcgetattr(serial_fd, &tio) < 0) {
+    perror("Getting configuration");
+    return -1;
+  }
+
+  // Set up Serial Configuration
+  tio.c_iflag = 0;
   tio.c_oflag = 0;
-  tio.c_lflag = 0; // ICANON;
+  tio.c_lflag = 0;
+  tio.c_cflag = 0;
+
   tio.c_cc[VMIN] = 0;
-  tio.c_cc[VTIME] = 1; // time out every .1 sec
-  ioctl(serial_fd, TCSETS, &tio);
+  tio.c_cc[VTIME] = 0;
 
-  //  ioctl(serial_fd, TCGETS2, &tio2);
-  //  tio2.c_cflag &= ~CBAUD;
-  //  tio2.c_cflag |= BOTHER;
-  //  tio2.c_ispeed = baud;
-  //  tio2.c_ospeed = baud;
-  //  ioctl(serial_fd, TCSETS2, &tio2);
+  tio.c_cflag = B115200 | CS8 | CREAD;
 
-  //   flush buffer
-  ioctl(serial_fd, TCFLSH, TCIOFLUSH);
+  tcsetattr(serial_fd, TCSANOW, &tio); // Apply configuration
+
+  return true;
 }
 
 void serialClose() { close(serial_fd); }
