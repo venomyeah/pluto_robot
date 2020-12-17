@@ -31,12 +31,19 @@ const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
 
 bool serialOpen() {
 
+  system("stty -F /dev/ttyUSB0 cs8 57600 ignbrk -brkint -icrnl -imaxbel -opost "
+         "-onlcr -isig -icanon -iexten -echo -echoe -echok -echoctl -echoke "
+         "noflsh -ixon -crtscts");
+
   std::string deviceName = "/dev/ttyACM0";
   serial_fd = open(deviceName.c_str(), O_RDWR | O_NOCTTY /* | O_NONBLOCK */);
 
   if (serial_fd < 0)
     return false;
 
+  return true;
+
+  // NOT WORKING
   struct termios config;
 
   cfmakeraw(&config);
