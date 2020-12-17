@@ -31,31 +31,27 @@ const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
 
 bool serialOpen() {
 
-  struct termios tio;
-
   std::string deviceName = "/dev/ttyACM0";
   serial_fd = open(deviceName.c_str(), O_RDWR | O_NOCTTY /* | O_NONBLOCK */);
 
   if (serial_fd < 0)
     return false;
 
-  if (tcgetattr(serial_fd, &tio) < 0) {
-    perror("Getting configuration");
-    return -1;
-  }
+  struct termios config;
 
-  // Set up Serial Configuration
-  tio.c_iflag = 0;
-  tio.c_oflag = 0;
-  tio.c_lflag = 0;
-  tio.c_cflag = 0;
+  cfmakeraw(&config);
+  config.c_cflag |= (CLOCAL | CREAD);
+  config.c_iflag &= ~(IXOFF | IXANY);
 
-  tio.c_cc[VMIN] = 0;
-  tio.c_cc[VTIME] = 0;
+  // set vtime, vmin, baud rate...
+  config.c_cc[VMIN] = 0;  // you likely don't want to change this
+  config.c_cc[VTIME] = 0; // or this
 
-  tio.c_cflag = B57600 | CS8 | CREAD;
+  cfsetispeed(&config, B57600);
+  cfsetospeed(&config, B57600);
 
-  tcsetattr(serial_fd, TCSANOW, &tio); // Apply configuration
+  // write port configuration to driver
+  tcsetattr(serial_fd, TCSANOW, &config);
 
   return true;
 }
