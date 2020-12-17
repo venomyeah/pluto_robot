@@ -34,7 +34,6 @@ bool serialOpen() {
   struct termios tio;
 
   std::string deviceName = "/dev/ttyACM0";
-  auto baud = 57600;
   serial_fd = open(deviceName.c_str(), O_RDWR | O_NOCTTY /* | O_NONBLOCK */);
 
   if (serial_fd < 0)
@@ -54,7 +53,7 @@ bool serialOpen() {
   tio.c_cc[VMIN] = 0;
   tio.c_cc[VTIME] = 0;
 
-  tio.c_cflag = B115200 | CS8 | CREAD;
+  tio.c_cflag = B57600 | CS8 | CREAD;
 
   tcsetattr(serial_fd, TCSANOW, &tio); // Apply configuration
 
