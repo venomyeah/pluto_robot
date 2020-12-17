@@ -48,7 +48,7 @@ set (LIBRARIES
  crypt
  pthread
  rt
- wiringPi
+ #wiringPi
 )
 
 set (SRC

@@ -9,26 +9,55 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <termios.h>
 #include <thread>
+
+//#include <asm/termbits.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
 
 // RPI
-#define __RPI__
-#ifdef __RPI__
-#include <wiringSerial.h>
-#endif
+//#define __RPI__
 
 // GLOBALS
 
 // real hardware
-#ifdef __RPI__
 int serial_fd;
-#endif
 
 // Constants
 const int PlutoMotorsDriver::LEFT_WHEEL_INDEX = 0;
 const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
+
+bool serialOpen() {
+
+  struct termios tio;
+  // struct termios2 tio2;
+  std::string deviceName = "/dev/ttyACM0";
+  auto baud = 57600;
+  serial_fd = open(deviceName.c_str(), O_RDWR | O_NOCTTY /* | O_NONBLOCK */);
+
+  if (serial_fd < 0)
+    return false;
+  tio.c_cflag = CS8 | CLOCAL | CREAD;
+  tio.c_oflag = 0;
+  tio.c_lflag = 0; // ICANON;
+  tio.c_cc[VMIN] = 0;
+  tio.c_cc[VTIME] = 1; // time out every .1 sec
+  ioctl(serial_fd, TCSETS, &tio);
+
+  //  ioctl(serial_fd, TCGETS2, &tio2);
+  //  tio2.c_cflag &= ~CBAUD;
+  //  tio2.c_cflag |= BOTHER;
+  //  tio2.c_ispeed = baud;
+  //  tio2.c_ospeed = baud;
+  //  ioctl(serial_fd, TCSETS2, &tio2);
+
+  //   flush buffer
+  ioctl(serial_fd, TCFLSH, TCIOFLUSH);
+}
+
+void serialClose() { close(serial_fd); }
 
 void serialTx(const std::string &str) {
   // write(serial_fd, str.c_str(), sizeof(str.c_str())/sizeof(char));
@@ -78,13 +107,11 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
       nh_.subscribe("/pluto_motors/right_wheel_velocity_controller/command", 1,
                     &PlutoMotorsDriver::rightVelSetPointCb, this);
 
-// real hardware
-#ifdef __RPI__
-  if ((serial_fd = serialOpen("/dev/ttyACM0", 57600)) < 0) {
-     fprintf(stderr, "Unable to open serial device: %s\n", strerror(errno));
-     return;
+  // real hardware
+  if (!serialOpen()) {
+    std::cout << "Unable to open serial device";
+    return;
   }
-#endif
 
   memset(vel_cmd, 0, sizeof(vel_cmd));
   memset(prev_vel_cmd, 0, sizeof(prev_vel_cmd));
@@ -93,13 +120,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
-PlutoMotorsDriver::~PlutoMotorsDriver() {
-#ifdef __RPI__
-  // Default to zero speed
-  serialPuts(serial_fd, "%0 0#");
-  serialClose(serial_fd);
-#endif
-}
+PlutoMotorsDriver::~PlutoMotorsDriver() { serialClose(); }
 
 // setpoints
 void PlutoMotorsDriver::leftVelSetPointCb(const std_msgs::Float64 &set_point) {
