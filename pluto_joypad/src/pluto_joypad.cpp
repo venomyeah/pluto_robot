@@ -23,9 +23,9 @@ void PlutoJoypad::joyCallback(const sensor_msgs::Joy joy_data) {
 
   // conversion
   std_msgs::Float64 left_cmd;
-  left_cmd.data = -left * 5;
+  left_cmd.data = -left * 3;
   std_msgs::Float64 right_cmd;
-  right_cmd.data = right * 5;
+  right_cmd.data = right * 3;
 
   // pub
   left_wheel_pub_.publish(left_cmd);
