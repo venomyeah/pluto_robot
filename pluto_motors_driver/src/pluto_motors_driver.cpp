@@ -76,9 +76,11 @@ std::string serialRx() {
 
   std::string retval = "";
 
-  char buf[1];
-  if (read(serial_fd, buf, 1) > 0) {
-    retval.push_back(buf[0]);
+  char buf[64];
+  if (read(serial_fd, buf, 64) > 0) {
+    for (const auto &c : buf) {
+      retval.push_back(c);
+    }
   }
   return retval;
 }
