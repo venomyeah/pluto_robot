@@ -72,7 +72,27 @@ void serialTx(const std::string &str) {
   system(ss.str().c_str());
 }
 
-std::string serialRx() {}
+std::string serialRx() {
+
+  std::string retval = "";
+
+  char buf[1];
+  bool line_read = false;
+  char prev_char = ' ';
+  while (!line_read) {
+    if (read(serial_fd, buf, 1) == 0) {
+      if (buf[0] != '\r' && buf[0] != '\n') {
+        retval.push_back(buf[0]);
+      }
+      if (prev_char == '\r' && buf[0] == '\n') {
+        line_read = true;
+      }
+      prev_char = buf[0];
+    }
+  }
+
+  return retval;
+}
 
 PlutoMotorsDriver::PlutoMotorsDriver() {
 
@@ -145,22 +165,14 @@ int PlutoMotorsDriver::sign(double val) { return (0 <= val) - (val < 0); }
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
-// real hardware
-#ifdef __RPI__
   // TODO read vel from serial
-  vel[0] = l_vel_set_point_;
-  vel[1] = r_vel_set_point_;
-#endif
-
-#ifndef __RPI__
-  vel[0] = l_vel_set_point_;
-  vel[1] = r_vel_set_point_;
-#endif
+  // vel[0] = l_vel_set_point_;
+  // vel[1] = r_vel_set_point_;
+  std::cout << "READ: " << serialRx() << std::endl;
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
                               const ros::Duration &period) {
-
   std::stringstream cmd;
   cmd << "%" << vel_cmd[LEFT_WHEEL_INDEX] << " " << vel_cmd[RIGHT_WHEEL_INDEX]
       << "#";
