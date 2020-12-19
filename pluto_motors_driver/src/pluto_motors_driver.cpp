@@ -166,8 +166,8 @@ void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
   // TODO read vel from serial
-  // vel[0] = l_vel_set_point_;
-  // vel[1] = r_vel_set_point_;
+  vel[0] = l_vel_set_point_;
+  vel[1] = r_vel_set_point_;
   std::cout << "READ: " << serialRx() << std::endl;
 }
 
