@@ -77,6 +77,13 @@ std::string serialRx() {
   std::string retval = "";
 
   char buf[1];
+  tcflush(serial_fd, TCIOFLUSH);
+  while (read(serial_fd, buf, 1) > 0) {
+    if (buf[0] == '%') {
+      retval.push_back(buf[0]);
+      break;
+    }
+  }
   while (read(serial_fd, buf, 1) > 0) {
 
     retval.push_back(buf[0]);
