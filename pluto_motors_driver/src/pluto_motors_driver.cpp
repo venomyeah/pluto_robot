@@ -66,10 +66,10 @@ bool serialOpen() {
 void serialClose() { close(serial_fd); }
 
 void serialTx(const std::string &str) {
-  // write(serial_fd, str.c_str(), str.size());
-  std::stringstream ss;
-  ss << "echo \"" << str << "\" > /dev/ttyACM0";
-  system(ss.str().c_str());
+  write(serial_fd, str.c_str(), str.size());
+  // std::stringstream ss;
+  // ss << "echo \"" << str << "\" > /dev/ttyACM0";
+  // system(ss.str().c_str());
 }
 
 std::string serialRx() {
