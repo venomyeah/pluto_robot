@@ -169,7 +169,11 @@ void PlutoMotorsDriver::read(const ros::Time &time,
   // TODO read vel from serial
   vel[0] = l_vel_set_point_;
   vel[1] = r_vel_set_point_;
-  std::cout << "READ: " << serialRx() << std::endl;
+  auto striga = serialRx();
+  std::cout << "READ: " << striga << std::endl;
+  float l, r;
+  sscanf(striga.c_str(), "%%%f %f#", &l, &r);
+  std::cout << "VALUES: " << l << " " << r;
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
