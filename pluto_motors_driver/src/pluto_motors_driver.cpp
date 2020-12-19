@@ -77,20 +77,9 @@ std::string serialRx() {
   std::string retval = "";
 
   char buf[1];
-  bool line_read = false;
-  char prev_char = ' ';
-  while (!line_read) {
-    if (read(serial_fd, buf, 1) > 0) {
-      if (buf[0] != '\r' && buf[0] != '\n') {
-        retval.push_back(buf[0]);
-      }
-      if (prev_char == '\r' && buf[0] == '\n') {
-        line_read = true;
-      }
-      prev_char = buf[0];
-    }
+  if (read(serial_fd, buf, 1) > 0) {
+    retval.push_back(buf[0]);
   }
-
   return retval;
 }
 
