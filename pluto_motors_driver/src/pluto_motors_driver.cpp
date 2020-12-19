@@ -80,7 +80,7 @@ std::string serialRx() {
   bool line_read = false;
   char prev_char = ' ';
   while (!line_read) {
-    if (read(serial_fd, buf, 1) == 0) {
+    if (read(serial_fd, buf, 1) > 0) {
       if (buf[0] != '\r' && buf[0] != '\n') {
         retval.push_back(buf[0]);
       }
