@@ -5,3 +5,5 @@ pluto_motors:
     right_wheel: 'right_wheel'
     pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
     twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+    wheel_separation: 0.4
+    wheel_radius: 0.04

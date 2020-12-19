@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <include file="$(find pluto_description)/launch/show_pluto.launch"/>
+<!--  <include file="$(find pluto_description)/launch/show_pluto.launch"/>-->
 
   <rosparam file="$(find pluto_motors_driver)/config/diff_drive_controller_config.yaml" command="load"/>
 
