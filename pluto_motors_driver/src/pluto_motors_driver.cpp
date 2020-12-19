@@ -18,7 +18,7 @@
 #include <unistd.h>
 
 // RPI
-//#define __RPI__
+#define __RPI__
 
 // GLOBALS
 
