@@ -174,15 +174,15 @@ void PlutoMotorsDriver::read(const ros::Time &time,
   sscanf(striga.c_str(), "%%%f %f#", &l, &r);
   // std::cout << "VALUES: " << l << " " << r;
 
-  vel[0] = static_cast<double>(l);
-  vel[1] = static_cast<double>(r);
+  vel[0] = static_cast<double>(l * M_PI * 2);
+  vel[1] = static_cast<double>(r * M_PI * 2);
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
                               const ros::Duration &period) {
   std::stringstream cmd;
-  cmd << "%" << vel_cmd[LEFT_WHEEL_INDEX] << " " << vel_cmd[RIGHT_WHEEL_INDEX]
-      << "#";
+  cmd << "%" << vel_cmd[LEFT_WHEEL_INDEX] / (M_PI * 2) << " "
+      << vel_cmd[RIGHT_WHEEL_INDEX] / (M_PI * 2) << "#";
 
   std::cout << "CMD: " << cmd.str() << std::endl;
 
