@@ -136,20 +136,30 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
       nh_.subscribe("/pluto_motors/right_wheel_velocity_controller/command", 1,
                     &PlutoMotorsDriver::rightVelSetPointCb, this);
 
-  // real hardware
+  // setup serial
   if (!serialOpen()) {
-    std::cout << "Unable to open serial device";
+    ROS_ERROR("Unable to open serial device..shutting down node");
+    ros::shutdown();
     return;
   }
 
+  // reset controller data
   memset(vel_cmd, 0, sizeof(vel_cmd));
   memset(prev_vel_cmd, 0, sizeof(prev_vel_cmd));
   memset(vel_cmd_count, 0, sizeof(vel_cmd_count));
 
+  // setup odometry
+  odom_pub_ = nh_.advertise<nav_msgs::Odometry>("/pluto_motors/odom", 1000);
+
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
-PlutoMotorsDriver::~PlutoMotorsDriver() { serialClose(); }
+PlutoMotorsDriver::~PlutoMotorsDriver() {
+
+  serialClose();
+
+  odom_pub_.shutdown();
+}
 
 // setpoints
 void PlutoMotorsDriver::leftVelSetPointCb(const std_msgs::Float64 &set_point) {
@@ -167,15 +177,19 @@ void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
   // read vel from serial
-
   auto striga = serialRx();
   // std::cout << "READ: " << striga << std::endl;
   float l, r;
   sscanf(striga.c_str(), "%%%f %f#", &l, &r);
   // std::cout << "VALUES: " << l << " " << r;
 
+  // output velocities to controller
   vel[0] = static_cast<double>(l * M_PI * 2);
   vel[1] = static_cast<double>(r * M_PI * 2);
+
+  // output odometry to topic
+  nav_msgs::Odometry odom;
+  odom_pub_.publish(odom);
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,

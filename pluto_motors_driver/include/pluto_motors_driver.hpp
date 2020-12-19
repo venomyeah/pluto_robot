@@ -10,6 +10,7 @@
 #include <hardware_interface/robot_hw.h>
 
 // msgs
+#include <nav_msgs/Odometry.h>
 #include <std_msgs/Float64.h>
 
 // generic
@@ -59,6 +60,9 @@ private:
   double r_vel_set_point_;
   void leftVelSetPointCb(const std_msgs::Float64 &set_point);
   void rightVelSetPointCb(const std_msgs::Float64 &set_point);
+
+  // odometry
+  ros::Publisher odom_pub_;
 
 public:
   void read(const ros::Time &time, const ros::Duration &period);
