@@ -98,4 +98,11 @@
   <!-- Front Castor -->
   <xacro:castor x_offset_from_base="0.20" prefix="front"/>
 
+  <!-- Differential drive controller params -->
+  <xacro:diff_controller_plugin_gazebo prefix=""
+    left_wheel_joint="left_wheel"
+    right_wheel_joint="right_wheel"
+    wheel_separation="${0.40}"
+    wheel_radius="${0.08}"/>
+
 </robot>
