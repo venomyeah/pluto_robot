@@ -56,6 +56,9 @@ private:
   double vel[2];
   double eff[2];
 
+  // odom
+  double odom_value;
+
   // helpers
   static inline int sign(double val);
 
