@@ -173,14 +173,15 @@ void PlutoMotorsDriver::read(const ros::Time &time,
 
   // read vel from serial
   auto striga = serialRx();
-  ROS_DEBUG_STREAM("READ: " << striga);
+  ROS_DEBUG_STREAM("READ SERIAL STRING: " << striga);
   float l, r;
   sscanf(striga.c_str(), "%%%f %f#", &l, &r);
-  ROS_DEBUG_STREAM("VALUES: " << l << " " << r);
+  ROS_DEBUG_STREAM("READ SERIAL VALUES: " << l << " " << r);
 
   // output velocities to controller
   vel[0] = static_cast<double>(l * M_PI * 2);
   vel[1] = static_cast<double>(r * M_PI * 2);
+  ROS_DEBUG_STREAM("READ VEL VALUES: " << vel[0] << " " << vel[1]);
 
   // output positions to controller
   pos[0] = pos[0] +
