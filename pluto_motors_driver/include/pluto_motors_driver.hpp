@@ -56,9 +56,6 @@ private:
   double vel[2];
   double eff[2];
 
-  // odom
-  double odom_value;
-
   // helpers
   static inline int sign(double val);
 
@@ -69,9 +66,6 @@ private:
   double r_vel_set_point_;
   void leftVelSetPointCb(const std_msgs::Float64 &set_point);
   void rightVelSetPointCb(const std_msgs::Float64 &set_point);
-
-  // odometry
-  ros::Publisher odom_pub_;
 
 public:
   void read(const ros::Time &time, const ros::Duration &period);

@@ -143,9 +143,6 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   memset(prev_vel_cmd, 0, sizeof(prev_vel_cmd));
   memset(vel_cmd_count, 0, sizeof(vel_cmd_count));
 
-  // setup odometry
-  odom_pub_ = nh_.advertise<nav_msgs::Odometry>("/pluto_motors/odom", 1000);
-
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
@@ -184,18 +181,9 @@ void PlutoMotorsDriver::read(const ros::Time &time,
   ROS_DEBUG_STREAM("READ VEL VALUES: " << vel[0] << " " << vel[1]);
 
   // output positions to controller
-  pos[0] = pos[0] + static_cast<double>(vel[0] * period.toSec());
-  pos[1] = pos[1] + static_cast<double>(vel[1] * period.toSec());
+  pos[0] += static_cast<double>(vel[0] * period.toSec());
+  pos[1] += static_cast<double>(vel[1] * period.toSec());
   ROS_INFO_STREAM("TIME PERIOD: " << period.toSec());
-
-  // output odometry to topic
-  //  nav_msgs::Odometry odom;
-  //  auto vel_left = vel[0] * params_.wheel_radius;
-  //  auto vel_right = vel[1] * params_.wheel_radius;
-  //  odom.twist.twist.linear.x = (vel_right + vel_left) / 2;
-  //  odom.twist.twist.angular.z =
-  //      (vel_right - vel_left) / params_.wheel_separation;
-  //  odom_pub_.publish(odom);
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
