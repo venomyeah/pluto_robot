@@ -17,14 +17,9 @@
 #include <termios.h>
 #include <unistd.h>
 
-// RPI
-#define __RPI__
-
 // GLOBALS
-
 // real hardware
 int serial_fd;
-
 // Constants
 const int PlutoMotorsDriver::LEFT_WHEEL_INDEX = 0;
 const int PlutoMotorsDriver::RIGHT_WHEEL_INDEX = 1;
@@ -97,9 +92,9 @@ std::string serialRx() {
 
 PlutoMotorsDriver::PlutoMotorsDriver() {
 
-#ifdef __RPI__
-  ROS_INFO_STREAM("Raspberry Pi Detected!");
-#endif
+  // read params
+  nh_.getParam("wheel_radius", params_.wheel_radius);
+  nh_.getParam("wheel_distance", params_.wheel_separation);
 
   // setup hardware interface..
 
@@ -178,18 +173,23 @@ void PlutoMotorsDriver::read(const ros::Time &time,
 
   // read vel from serial
   auto striga = serialRx();
-  // std::cout << "READ: " << striga << std::endl;
+  ROS_DEBUG_STREAM("READ: " << striga);
   float l, r;
   sscanf(striga.c_str(), "%%%f %f#", &l, &r);
-  // std::cout << "VALUES: " << l << " " << r;
+  ROS_DEBUG_STREAM("VALUES: " << l << " " << r);
 
   // output velocities to controller
   vel[0] = static_cast<double>(l * M_PI * 2);
   vel[1] = static_cast<double>(r * M_PI * 2);
 
   // output odometry to topic
-  nav_msgs::Odometry odom;
-  odom_pub_.publish(odom);
+  //  nav_msgs::Odometry odom;
+  //  auto vel_left = vel[0] * params_.wheel_radius;
+  //  auto vel_right = vel[1] * params_.wheel_radius;
+  //  odom.twist.twist.linear.x = (vel_right + vel_left) / 2;
+  //  odom.twist.twist.angular.z =
+  //      (vel_right - vel_left) / params_.wheel_separation;
+  //  odom_pub_.publish(odom);
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
@@ -198,13 +198,12 @@ void PlutoMotorsDriver::write(const ros::Time &time,
   cmd << "%" << vel_cmd[LEFT_WHEEL_INDEX] / (M_PI * 2) << " "
       << vel_cmd[RIGHT_WHEEL_INDEX] / (M_PI * 2) << "#";
 
-  std::cout << "CMD: " << cmd.str() << std::endl;
+  ROS_DEBUG_STREAM("CMD: " << cmd.str());
 
-// real hardware
-#ifdef __RPI__
+  // send vel to serial
   serialTx(cmd.str());
-#endif
 
+  // update prev vel
   prev_vel_cmd[LEFT_WHEEL_INDEX] = vel_cmd[LEFT_WHEEL_INDEX];
   prev_vel_cmd[RIGHT_WHEEL_INDEX] = vel_cmd[RIGHT_WHEEL_INDEX];
 }

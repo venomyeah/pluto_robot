@@ -20,6 +20,11 @@
 
 class PlutoMotorsDriver : public hardware_interface::RobotHW {
 
+  struct Params {
+    double wheel_radius;
+    double wheel_separation;
+  };
+
 public:
   static const int LEFT_WHEEL_INDEX;
   static const int RIGHT_WHEEL_INDEX;
@@ -30,6 +35,7 @@ public:
 
 private:
   ros::NodeHandle nh_;
+  Params params_;
 
   // hw interface
 private:
