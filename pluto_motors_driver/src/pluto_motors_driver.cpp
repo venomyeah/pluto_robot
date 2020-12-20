@@ -182,6 +182,11 @@ void PlutoMotorsDriver::read(const ros::Time &time,
   vel[0] = static_cast<double>(l * M_PI * 2);
   vel[1] = static_cast<double>(r * M_PI * 2);
 
+  // output positions to controller
+  pos[0] = static_cast<double>(vel[0] * params_.wheel_radius);
+  pos[1] = static_cast<double>(vel[1] * params_.wheel_radius);
+  ROS_INFO_STREAM("TIME READ: " << time.toSec());
+
   // output odometry to topic
   //  nav_msgs::Odometry odom;
   //  auto vel_left = vel[0] * params_.wheel_radius;
