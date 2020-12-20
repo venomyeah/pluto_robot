@@ -146,12 +146,7 @@ PlutoMotorsDriver::PlutoMotorsDriver() {
   ROS_DEBUG_STREAM("PlutoMotorsiDriver started");
 }
 
-PlutoMotorsDriver::~PlutoMotorsDriver() {
-
-  serialClose();
-
-  odom_pub_.shutdown();
-}
+PlutoMotorsDriver::~PlutoMotorsDriver() { serialClose(); }
 
 // setpoints
 void PlutoMotorsDriver::leftVelSetPointCb(const std_msgs::Float64 &set_point) {
