@@ -56,7 +56,7 @@ PlutoJoypad::PlutoJoypad() {
 
   ros::NodeHandle nh;
 
-  joy_sub_ = nh.subscribe("/joy", 1000, &PlutoJoypad::joyCallback, this);
+  joy_sub_ = nh.subscribe("/joy", 10, &PlutoJoypad::joyCallback, this);
 
   left_wheel_pub_ = nh.advertise<std_msgs::Float64>(
       "/pluto_motors/left_wheel_velocity_controller/command", 1000);
