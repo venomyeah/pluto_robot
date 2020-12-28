@@ -6,9 +6,7 @@
   <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
 
   <!-- Pluto Motors Driver -->
-  <include file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" >
-    <arg name="gui" value="false"/>
-  </include>
+  <include file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" />
 
 </launch>
 
