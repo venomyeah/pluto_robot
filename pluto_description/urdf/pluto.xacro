@@ -27,6 +27,9 @@
   <material name="rubber">
     <color rgba="0 0 0 1"/>
   </material>
+  <material name="black_plastic">
+    <color rgba="0 0 0 1"/>
+  </material>
 
 
   <!-- Used for fixing robot to Gazebo 'base_link' -->
@@ -84,8 +87,6 @@
     </visual>
   </link>
 
-
-
   <!-- Left Wheel -->
   <xacro:wheel y_offset_from_base="0.188" prefix="left"/>
 
@@ -106,9 +107,18 @@
     wheel_radius="${0.08}"/>-->
 
   <!-- Laser -->
-  <joint name="fixed" type="fixed">
-    <parent link="base_link"/>
+  <joint name="laser_joint" type="fixed">
+    <parent link="level_1"/>
     <child link="laser"/>
+    <origin xyz="0 0 0.03" rpy="0 0 3.14" />
+    <axis xyz="0 1 0" />
   </joint>
-
+  <link name="laser">
+    <visual>
+      <geometry>
+        <cylinder length="0.06" radius="0.03"/>
+      </geometry>
+      <material name="black_plastic"/>
+    </visual>
+  </link>
 </robot>

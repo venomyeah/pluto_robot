@@ -3,6 +3,7 @@
 
   <arg name="load_map" default="false"/>
   <arg name="run_amcl" default="false"/>
+  <arg name="gui" default="false"/>
 
   <master auto="start"/>
 
@@ -18,6 +19,8 @@
     <rosparam file="$(find pluto_2dnav)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find pluto_2dnav)/config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find pluto_2dnav)/config/base_local_planner_params.yaml" command="load" />
+    <remap from="odom" to="pluto_motors/diff_drive_controller/odom" />
   </node>
+  <node if="$(arg gui)" name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find pluto_2dnav)/rviz/config.rviz" />
 
 </launch>
