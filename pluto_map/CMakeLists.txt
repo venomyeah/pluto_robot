@@ -188,6 +188,12 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+## Install maps
+install(DIRECTORY data
+  DESTINATION data}
+)
+
+
 #############
 ## Testing ##
 #############

@@ -1,4 +1,4 @@
-image: casa_kr_map.pgm
+image: casa-kr-map.pgm
 resolution: 0.050000
 origin: [-4.815086, -13.853108, 0.000000]
 #origin: [0, 0, 0.000000]

@@ -23,6 +23,7 @@
     <rosparam file="$(find pluto_2dnav)/config/local_costmap_params.yaml" command="load" />
     <rosparam file="$(find pluto_2dnav)/config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find pluto_2dnav)/config/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find pluto_2dnav)/config/general.yaml" command="load" />
     <remap from="odom" to="pluto_motors/diff_drive_controller/odom" />
     <remap from="cmd_vel" to="pluto_motors/diff_drive_controller/cmd_vel" />
   </node>
