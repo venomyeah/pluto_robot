@@ -68,9 +68,9 @@ TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true
 
 
 -- PURE LOCALIZATION (enables it)
-TRAJECTORY_BUILDER.pure_localization_trimmer = {
-    max_submaps_to_keep = 3,
-}
+--TRAJECTORY_BUILDER.pure_localization_trimmer = {
+--    max_submaps_to_keep = 3,
+--}
 
 -- GLOBAL SLAM
 POSE_GRAPH.optimize_every_n_nodes = 3
