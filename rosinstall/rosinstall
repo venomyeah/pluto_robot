@@ -1,0 +1,14 @@
+- git:
+    local-name: cartographer
+    uri: https://github.com/cartographer-project/cartographer.git
+    version: master
+- git:
+    local-name: cartographer_ros
+    uri: https://github.com/cartographer-project/cartographer_ros.git
+    version: master
+- git:
+    local-name: pluto_robot
+    uri: git@github.com:venomyeah/pluto_robot.git
+- git:
+    local-name: rplidar_ros
+    uri: https://github.com/robopeak/rplidar_ros.git

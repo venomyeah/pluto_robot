@@ -6,8 +6,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED
   roscpp
   std_msgs
-  sensor_msgs
-  pluto_msgs)
+  sensor_msgs)
 
 catkin_package(
   INCLUDE_DIRS include

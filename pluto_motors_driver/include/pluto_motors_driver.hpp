@@ -3,30 +3,71 @@
  * Vittorio Lumare venom@venom.it
  */
 
-#include "ros/ros.h"
-#include <pluto_msgs/MotorsPower.h>
-#include <pluto_msgs/SetMotorsPower.h>
+// ros
+#include <hardware_interface/hardware_interface.h>
+#include <hardware_interface/joint_command_interface.h>
+#include <hardware_interface/joint_state_interface.h>
+#include <hardware_interface/robot_hw.h>
 
+// msgs
+#include <nav_msgs/Odometry.h>
+#include <std_msgs/Float64.h>
+
+// generic
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <wiringPi.h>
 
-#define PWM0 26
-#define PWM1 23
+class PlutoMotorsDriver : public hardware_interface::RobotHW {
 
-class PlutoMotorsDriver {
+  struct Params {
+    double wheel_radius;
+    double wheel_separation;
+  };
+
+public:
+  static const int LEFT_WHEEL_INDEX;
+  static const int RIGHT_WHEEL_INDEX;
 
 public:
   PlutoMotorsDriver();
-
-  bool setMotorsPower(pluto_msgs::SetMotorsPower::Request &req,
-                      pluto_msgs::SetMotorsPower::Response &res);
-
-  void setMotorsPowerCallback(const pluto_msgs::MotorsPower &mp);
+  ~PlutoMotorsDriver();
 
 private:
   ros::NodeHandle nh_;
-  ros::ServiceServer service_server_;
-  ros::Subscriber topic_sub_;
+  Params params_;
+
+  // hw interface
+private:
+  hardware_interface::JointStateInterface jnt_state_interface;
+  hardware_interface::VelocityJointInterface jnt_vel_interface;
+  hardware_interface::EffortJointInterface jnt_eff_interface;
+
+  hardware_interface::JointHandle l_wheel_vel_handle_;
+  hardware_interface::JointHandle r_wheel_vel_handle_;
+
+  // joint commands
+  double vel_cmd[2];
+  double prev_vel_cmd[2];
+  unsigned int vel_cmd_count[2];
+
+  // joint state
+  double pos[2];
+  double vel[2];
+  double eff[2];
+
+  // helpers
+  static inline int sign(double val);
+
+  // setpoints
+  ros::Subscriber l_vel_setpoint_sub_;
+  ros::Subscriber r_vel_setpoint_sub_;
+  double l_vel_set_point_;
+  double r_vel_set_point_;
+  void leftVelSetPointCb(const std_msgs::Float64 &set_point);
+  void rightVelSetPointCb(const std_msgs::Float64 &set_point);
+
+public:
+  void read(const ros::Time &time, const ros::Duration &period);
+  void write(const ros::Time &time, const ros::Duration &period);
 };

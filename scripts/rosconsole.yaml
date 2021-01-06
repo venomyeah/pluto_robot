@@ -1,0 +1,8 @@
+# All packages
+log4j.logger.ros=INFO
+
+# Specific packages
+log4j.logger.ros.pluto_motors_driver=DEBUG
+
+
+

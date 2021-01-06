@@ -1,0 +1,15 @@
+pluto_motors:
+  # Publish joint states
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  # Position Controllers
+  left_wheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: left_wheel
+
+  # Position Controllers
+  right_wheel_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: right_wheel

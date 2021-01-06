@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<launch>
+<!--  <include file="$(find pluto_description)/launch/show_pluto.launch"/>-->
+
+  <rosparam file="$(find pluto_motors_driver)/config/diff_drive_controller_config.yaml" command="load"/>
+
+  <!-- Load hardware interface -->
+  <node ns="/pluto_motors" name="pluto_hardware_interface" pkg="pluto_motors_driver" type="node" output="screen" >
+  </node>
+
+  <!-- spawn controller manager -->
+  <node name="ros_control_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/pluto_motors" args="diff_drive_controller" />
+
+
+</launch>
+

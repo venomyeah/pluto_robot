@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="load_xacro" default="false"/>
+  <arg name="load_map" default="false"/>
+  <arg name="run_amcl" default="false"/>
+  <arg name="gui" default="false"/>
+
+  <master auto="start"/>
+
+  <include if="$(arg load_xacro)" file="$(find pluto_description)/launch/show_pluto.launch" >
+    <arg name="gui" value="false"/>
+  </include>
+
+  <!-- Run the map server -->
+  <node if="$(arg load_map)" name="map_server" pkg="map_server" type="map_server" args="$(find pluto_map)/data/casa_kr_map.pgm 0.05"/>
+
+  <!--- Run AMCL -->
+  <include if="$(arg run_amcl)" file="$(find amcl)/examples/amcl_omni.launch" />
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find pluto_2dnav)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find pluto_2dnav)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find pluto_2dnav)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find pluto_2dnav)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find pluto_2dnav)/config/base_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find pluto_2dnav)/config/general.yaml" command="load" />
+    <remap from="odom" to="pluto_motors/diff_drive_controller/odom" />
+    <remap from="cmd_vel" to="pluto_motors/diff_drive_controller/cmd_vel" />
+  </node>
+  <node if="$(arg gui)" name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find pluto_2dnav)/rviz/config.rviz" />
+
+</launch>

@@ -1,0 +1,25 @@
+pluto_motors:
+
+  # Publish joint states
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+
+  diff_drive_controller:
+    type: "diff_drive_controller/DiffDriveController"
+    left_wheel: 'left_wheel'
+    right_wheel: 'right_wheel'
+    pose_covariance_diagonal : [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+    twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+    wheel_separation: 0.4
+    wheel_radius: 0.04
+
+    # Top level frame (link) of the robot description
+    base_frame_id: 'base_link'
+
+    # Velocity commands timeout [s], default 0.5
+    cmd_vel_timeout: 0.25
+
+    # Odometry
+    enable_odom_tf: true
+    odom_frame_id: '/odom'

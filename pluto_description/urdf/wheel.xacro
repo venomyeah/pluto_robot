@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+<xacro:macro name="wheel" params="prefix y_offset_from_base">
+
+  <joint name="${prefix}_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="${prefix}_wheel"/>
+    <origin xyz="0 ${y_offset_from_base} -0.045" rpy="1.57 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="${prefix}_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.024" radius="0.045"/>
+      </geometry>
+      <material name="rubber"/>
+    </visual>
+  </link>
+
+  <joint name="${prefix}_wheel_truck_a_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="${prefix}_wheel_truck_a"/>
+    <origin xyz="0 ${y_offset_from_base + 0.021} -0.035" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="${prefix}_wheel_truck_a">
+    <visual>
+      <geometry>
+        <box size="0.16 0.012 0.06"/>
+      </geometry>
+      <material name="light_wood"/>
+    </visual>
+  </link>
+
+  <joint name="${prefix}_wheel_truck_b_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="${prefix}_wheel_truck_b"/>
+    <origin xyz="0 ${y_offset_from_base - 0.021} -0.035" rpy="0 0 0" />
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <link name="${prefix}_wheel_truck_b">
+    <visual>
+      <geometry>
+        <box size="0.055 0.012 0.06"/>
+      </geometry>
+      <material name="light_wood"/>
+    </visual>
+  </link>
+
+</xacro:macro>
+</robot>

@@ -3,16 +3,33 @@
  * Vittorio Lumare venom@venom.it
  */
 
-#include <pluto_motors_driver.hpp>
 #include "ros/ros.h"
+#include <controller_manager/controller_manager.h>
+#include <pluto_motors_driver.hpp>
+#define FREQUENCY 10
 
-int main (int argc, char **argv)
-{
-    ros::init(argc, argv, "pluto_motors_driver_node");    
+int ser_fd;
 
-    PlutoMotorsDriver pmd;    
+int main(int argc, char **argv) {
+  ros::init(argc, argv, "pluto_motors_driver_node");
 
-    ros::spin();
+  PlutoMotorsDriver pmd;
 
-    return 0;
+  controller_manager::ControllerManager cm(&pmd);
+
+  ros::Rate r(FREQUENCY);
+  ros::AsyncSpinner spinner(2);
+  spinner.start();
+
+  ros::Time ts = ros::Time::now();
+  while (ros::ok()) {
+
+    ros::Duration d = ts - ros::Time::now();
+    ts = ros::Time::now();
+    pmd.read(ts, d);
+    cm.update(ts, d);
+    pmd.write(ts, d);
+    r.sleep();
+  }
+  return 0;
 }
