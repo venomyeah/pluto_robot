@@ -30,9 +30,10 @@ sudo ninja install
 # Install pluto_robot
 cd ~/ros/pluto_ws/src
 git clone git@github.com:venomyeah/pluto_robot.git
-wstool merge src/pluto_robot/rosinstall/rosinstall
+wstool merge pluto_robot/rosinstall/rosinstall
 wstool update
 
 # Build
+cd ~/ros/pluto_ws
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
 catkin build
