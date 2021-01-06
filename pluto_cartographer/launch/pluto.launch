@@ -40,5 +40,5 @@
   <!-- test without and then remove, is already in xacro -->
   <!--<node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_laser_tf" args="0.0 0.0 0.0 0.0 0.0 1.0 0.0 base_link laser"/>-->
 
-  <node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
+  <node name="rviz" pkg="rviz" type="rviz" required="true" args="-d $(find pluto_cartographer)/config/demo_2d.rviz" />
 </launch>
