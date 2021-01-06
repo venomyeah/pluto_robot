@@ -2,7 +2,7 @@
 
 INSTALL
 =======
-wget https://raw.githubusercontent.com/venomyeah/pluto_robot/master/scripts/install_workspace.zsh
+wget https://github.com/venomyeah/pluto_robot/blob/master/scripts/install_workspace.zsh
 
 chmod 755 install_workspace.zsh
 
