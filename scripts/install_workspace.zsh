@@ -15,10 +15,6 @@ wstool update -t src
 sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
-cd abseil-cpp/build
-cmake ..
-ninja
-sudo ninja install
 
 # Only on Ubuntu 16 / ROS Kinetic:
 src/cartographer/scripts/install_proto3.sh
@@ -26,10 +22,14 @@ src/cartographer/scripts/install_proto3.sh
 src/cartographer/scripts/install_abseil.sh
 sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
 
+cd abseil-cpp/build
+cmake ..
+ninja
+sudo ninja install
 
 # Install pluto_robot
 git clone git@github.com:venomyeah/pluto_robot.git
-wstool merge -t src/pluto_robot/rosinstall/rosinstall
+wstool merge -t src src/pluto_robot/rosinstall/rosinstall
 wstool update
 
 # Build
