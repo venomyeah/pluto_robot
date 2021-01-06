@@ -7,10 +7,11 @@ mkdir pluto_ws
 cd pluto_ws
 wstool init src
 
-# Install Google Cartographer deps
+# Install Google Cartographer and its deps
+sudo apt-get update
+sudo apt-get install -y python-wstool python-rosdep ninja-build stow
 wstool merge -t src https://raw.githubusercontent.com/cartographer-project/cartographer_ros/master/cartographer_ros.rosinstall
 wstool update -t src
-
 sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
