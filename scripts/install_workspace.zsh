@@ -28,8 +28,9 @@ ninja
 sudo ninja install
 
 # Install pluto_robot
+cd ~/ros/pluto_ws/src
 git clone git@github.com:venomyeah/pluto_robot.git
-wstool merge -t src src/pluto_robot/rosinstall/rosinstall
+wstool merge src/pluto_robot/rosinstall/rosinstall
 wstool update
 
 # Build
