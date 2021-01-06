@@ -23,9 +23,10 @@ sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
 
 
 # Install pluto_robot
-wstool merge -t src https://raw.githubusercontent.com/venomyeah/pluto_robot/master/rosinstall/rosinstall
+git clone git@github.com:venomyeah/pluto_robot.git
+wstool merge -t src/pluto_robot/rosinstall/rosinstall
+wstool update
 
 # Build
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
 catkin build
-
