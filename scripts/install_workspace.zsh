@@ -15,6 +15,10 @@ wstool update -t src
 sudo rosdep init
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
+cd abseil-cpp/build
+cmake ..
+ninja
+sudo ninja install
 
 # Only on Ubuntu 16 / ROS Kinetic:
 src/cartographer/scripts/install_proto3.sh
