@@ -16,7 +16,7 @@
 
 <launch>
   <arg name="use_bag" default="false" />
-  <arg name="load_state_filename" default="$(find pluto_map)/data/casa-kr-new.bag.pbstream" />
+  <arg name="load_state_filename" default="$(find pluto_map)/data/casa-kr-new-costmap.bag.pbstream" />
 
   <param name="/use_sim_time" value="false" />
 
@@ -31,7 +31,7 @@
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
           -configuration_directory $(find pluto_cartographer)/config
-          -configuration_basename pluto.lua
+          -configuration_basename pluto_localization.lua
           -load_state_filename $(arg load_state_filename)"
       output="screen">
     <remap from="echoes" to="horizontal_laser_2d" />

@@ -47,7 +47,9 @@ MAP_BUILDER.use_trajectory_builder_2d = true
 TRAJECTORY_BUILDER_2D.num_accumulated_range_data = 1
 TRAJECTORY_BUILDER_2D.use_imu_data = false
 
-TRAJECTORY_BUILDER_2D.min_range = 0.4
+TRAJECTORY_BUILDER_2D.submaps.grid_options_2d.resolution = 0.05
+
+TRAJECTORY_BUILDER_2D.min_range = 0.15
 TRAJECTORY_BUILDER_2D.max_range = 8.0
 --TRAJECTORY_BUILDER_2D.voxel_filter_size
 --TRAJECTORY_BUILDER_2D.*adaptive_voxel_filter.max_length
@@ -56,11 +58,11 @@ TRAJECTORY_BUILDER_2D.max_range = 8.0
 --TRAJECTORY_BUILDER_2D.imu_gravity_time_constant
 
  -- CeresScanMatcher method
-TRAJECTORY_BUILDER_2D.ceres_scan_matcher.translation_weight = 1
-TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 1
+TRAJECTORY_BUILDER_2D.ceres_scan_matcher.translation_weight = 0.1
+TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 0.1
 
 -- RealTimeCorrelativeScanMatcher Method
-TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true
+TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = false
 --TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.linear_search_window = 1
 --TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.angular_search_window = 1.57
 --TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.translation_delta_cost_weight
@@ -73,11 +75,11 @@ TRAJECTORY_BUILDER.pure_localization_trimmer = {
 }
 
 -- GLOBAL SLAM
-POSE_GRAPH.optimize_every_n_nodes = 3
---POSE_GRAPH.optimization_problem.local_slam_pose_translation_weight
---POSE_GRAPH.optimization_problem.local_slam_pose_rotation_weight
-POSE_GRAPH.optimization_problem.odometry_translation_weight = 0.1 
-POSE_GRAPH.optimization_problem.odometry_rotation_weight = 0
+POSE_GRAPH.optimize_every_n_nodes = 1
+POSE_GRAPH.optimization_problem.local_slam_pose_translation_weight = 1
+POSE_GRAPH.optimization_problem.local_slam_pose_rotation_weight = 1
+POSE_GRAPH.optimization_problem.odometry_translation_weight = 0.1
+POSE_GRAPH.optimization_problem.odometry_rotation_weight = 0.1
 
 
 

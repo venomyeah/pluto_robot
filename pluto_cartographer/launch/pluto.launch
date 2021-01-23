@@ -27,7 +27,7 @@
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
           -configuration_directory $(find pluto_cartographer)/config
-          -configuration_basename pluto.lua"
+          -configuration_basename pluto_mapping.lua"
       output="screen">
     <remap from="echoes" to="horizontal_laser_2d" />
     <remap from="odom" to="pluto_motors/diff_drive_controller/odom" />
