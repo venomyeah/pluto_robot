@@ -218,31 +218,12 @@ Visualization Manager:
         All Submap Pose Markers: true
         Trajectory 0:
           0.180: true
-          1.180: true
-          10.180: true
-          11.180: true
-          12.180: true
-          13.180: true
-          14.180: true
-          15.180: true
-          16.180: true
-          17.180: true
-          18.110: true
-          19.20: true
-          2.180: true
-          3.180: true
-          4.180: true
-          5.180: true
-          6.180: true
-          7.180: true
-          8.180: true
-          9.180: true
+          1.111: true
+          2.21: true
           Submap Pose Markers: true
           Value: true
         Trajectory 1:
-          4.180: true
-          5.160: true
-          6.70: true
+          0.4: true
           Submap Pose Markers: true
           Value: true
       Topic: /submap_list
@@ -272,7 +253,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.0500000007
+      Size (m): 0.0199999996
       Style: Flat Squares
       Topic: /scan_matched_points2
       Unreliable: false
@@ -411,11 +392,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Scale: 102.879219
+      Scale: 161.882446
       Target Frame: <Fixed Frame>
       Value: TopDownOrtho (rviz)
-      X: -2.81663465
-      Y: 2.61268973
+      X: 0.378568292
+      Y: -0.733680487
     Saved: ~
 Window Geometry:
   Displays:
