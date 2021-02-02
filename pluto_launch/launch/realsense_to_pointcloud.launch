@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <launch>
 
+<!-- Nodelet manager for this pipeline -->
+<node pkg="nodelet" type="nodelet" args="manager" name="depth_transforms_manager" output="screen"/>
+
 <!-- Convert to point cloud -->
 <node if="true" pkg="nodelet" type="nodelet" name="cloudify"
 args="load depth_image_proc/point_cloud_xyzrgb depth_transforms_manager --no-bond">
@@ -16,3 +19,4 @@ args="load depth_image_proc/point_cloud_xyzrgb depth_transforms_manager --no-bon
 </node>
 
 </launch>
+
