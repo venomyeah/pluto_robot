@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <launch>
   <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
   <arg name="base_frame" default="base_link"/>
