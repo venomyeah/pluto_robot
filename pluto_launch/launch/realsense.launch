@@ -3,6 +3,8 @@
 
 <include file="$(find realsense2_camera)/launch/rs_camera.launch">
 <!-- NOT WORKING  <param name="depth_optical_frame_id" value="camera_color_optical_frame"/>-->
+
+  <arg name="initial_reset" value="true"/>
   <arg name="align_depth" value="true"/>
 <!--  <arg name="filters" value="pointcloud"/>-->
 <!--  <arg name="color_height" value="240"/>
