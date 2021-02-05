@@ -11,7 +11,7 @@
   <include file="$(find pluto_launch)/launch/realsense.launch"/>
 
   <!-- Navigation -->
-  <include file="$(find pluto_2nav)/launch/move_base.launch"/>
+  <include file="$(find pluto_2dnav)/launch/move_base.launch"/>
 
 </launch>
 
