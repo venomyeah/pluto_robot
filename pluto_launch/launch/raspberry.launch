@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<arg name="nav" default="true"/>
-<arg name="cam" default="true"/>
-
 <launch>
+  <arg name="nav" default="true"/>
+  <arg name="cam" default="true"/>
+
   <!-- Pluto Motors Driver -->
   <include file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" />
 
