@@ -1,12 +1,17 @@
 <?xml version="1.0"?>
 
 <launch>
+  <!-- Pluto Motors Driver -->
+  <include file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" />
 
   <!-- RPLidar -->
   <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
 
-  <!-- Pluto Motors Driver -->
-  <include file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" />
+  <!-- Realsense -->
+  <include file="$(find pluto_launch)/launch/realsense.launch"/>
+
+  <!-- Navigation -->
+  <include file="$(find pluto_2nav)/launch/move_base.launch"/>
 
 </launch>
 
