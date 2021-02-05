@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<arg name="nav" default:="true"/>
-<arg name="cam" default:="true"/>
+<arg name="nav" default="true"/>
+<arg name="cam" default="true"/>
 
 <launch>
   <!-- Pluto Motors Driver -->
