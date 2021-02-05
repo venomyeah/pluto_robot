@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
+<arg name="nav" default:="true"/>
+<arg name="cam" default:="true"/>
 
 <launch>
   <!-- Pluto Motors Driver -->
@@ -8,10 +10,10 @@
   <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
 
   <!-- Realsense -->
-  <include file="$(find pluto_launch)/launch/realsense.launch"/>
+  <include if="$(arg cam)" file="$(find pluto_launch)/launch/realsense.launch"/>
 
   <!-- Navigation -->
-  <include file="$(find pluto_2dnav)/launch/move_base.launch"/>
+  <include if="$(arg nav)" file="$(find pluto_2dnav)/launch/move_base.launch"/>
 
 </launch>
 
