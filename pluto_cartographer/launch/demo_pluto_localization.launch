@@ -35,7 +35,10 @@
           -load_state_filename $(arg load_state_filename)"
       output="screen">
     <remap from="echoes" to="horizontal_laser_2d" />
+
+    <!-- TODO MOVE TO PLUTO_LAUNCH PACKAGE -->
     <remap from="odom" to="pluto_motors/diff_drive_controller/odom" />
+    <remap from="imu" to="camera/imu"/>
   </node>
 
   <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
@@ -48,5 +51,5 @@
   <!--<node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_laser_tf" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 map base_link"/>-->
   
   <node if="$(arg use_bag)" name="playbag" pkg="rosbag" type="play" args="--clock $(arg bag_filename)" />
-  
+
 </launch>

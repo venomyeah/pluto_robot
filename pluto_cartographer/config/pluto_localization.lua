@@ -20,12 +20,12 @@ options = {
   trajectory_builder = TRAJECTORY_BUILDER,
   map_frame = "map",
   tracking_frame = "base_link",
-  published_frame = "odom",
+  published_frame = "base_link",
   odom_frame = "odom",
-  provide_odom_frame = false,
+  provide_odom_frame = true,
   publish_frame_projected_to_2d = true,
   use_pose_extrapolator = true,
-  use_odometry = true,
+  use_odometry = false,
   use_nav_sat = false,
   use_landmarks = false,
   num_laser_scans = 1,
@@ -46,7 +46,6 @@ options = {
 MAP_BUILDER.use_trajectory_builder_2d = true
 TRAJECTORY_BUILDER_2D.num_accumulated_range_data = 1
 TRAJECTORY_BUILDER_2D.use_imu_data = false
-
 TRAJECTORY_BUILDER_2D.submaps.grid_options_2d.resolution = 0.05
 
 TRAJECTORY_BUILDER_2D.min_range = 0.15
@@ -62,7 +61,7 @@ TRAJECTORY_BUILDER_2D.ceres_scan_matcher.translation_weight = 0.1
 TRAJECTORY_BUILDER_2D.ceres_scan_matcher.rotation_weight = 0.1
 
 -- RealTimeCorrelativeScanMatcher Method
-TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = false
+TRAJECTORY_BUILDER_2D.use_online_correlative_scan_matching = true
 --TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.linear_search_window = 1
 --TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.angular_search_window = 1.57
 --TRAJECTORY_BUILDER_2D.real_time_correlative_scan_matcher.translation_delta_cost_weight

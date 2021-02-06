@@ -250,7 +250,7 @@ Visualization Manager:
           Submap Pose Markers: false
           Value: true
         Trajectory 1:
-          0.40: true
+          0.4: true
           Submap Pose Markers: false
           Value: true
       Topic: /submap_list
@@ -418,12 +418,12 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz_plugin_tutorials/Imu
       Color: 204; 51; 204
-      Enabled: true
+      Enabled: false
       History Length: 1
       Name: Imu
       Topic: /camera/imu
       Unreliable: false
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 100; 100; 100
@@ -464,10 +464,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.870397806
+      Pitch: 0.715397775
       Target Frame: <Fixed Frame>
       Value: XYOrbit (rviz)
-      Yaw: 3.569947
+      Yaw: 3.63494802
     Saved: ~
 Window Geometry:
   Displays:

@@ -31,6 +31,7 @@
       output="screen">
     <remap from="echoes" to="horizontal_laser_2d" />
     <remap from="odom" to="pluto_motors/diff_drive_controller/odom" />
+    <remap from="imu" to="camera/imu"/>
   </node>
 
   

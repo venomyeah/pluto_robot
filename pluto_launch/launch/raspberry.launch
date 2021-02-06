@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="motors" default="true"/>
+  <arg name="lidar" default="true"/>
   <arg name="nav" default="true"/>
   <arg name="cam" default="true"/>
 
   <!-- Pluto Motors Driver -->
-  <include file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" />
+  <include if="$(arg motors)" file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" />
 
   <!-- RPLidar -->
-  <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
+  <include if="$(arg lidar)" file="$(find rplidar_ros)/launch/rplidar.launch"/>
 
   <!-- Realsense -->
   <include if="$(arg cam)" file="$(find pluto_launch)/launch/realsense.launch"/>
