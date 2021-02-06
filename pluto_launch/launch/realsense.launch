@@ -24,7 +24,7 @@
   <arg name="accel_fps"           value="250"/>
   <arg name="enable_gyro"         value="true"/>
   <arg name="enable_accel"        value="true"/>
-  <arg name="unite_imu_method"    value="true"/>
+  <arg name="unite_imu_method"    value="linear_interpolation"/>
 
 </include>
 </launch>
