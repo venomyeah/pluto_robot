@@ -163,7 +163,7 @@ int PlutoMotorsDriver::sign(double val) { return (0 <= val) - (val < 0); }
 void PlutoMotorsDriver::read(const ros::Time &time,
                              const ros::Duration &period) {
 
-  ROS_INFO_STREAM("ABS TIME PERIOD: " << period.toSec());
+  ROS_DEBUG_STREAM("ABS TIME PERIOD: " << period.toSec());
 
   // read vel from serial
   auto striga = serialRx();
@@ -181,7 +181,7 @@ void PlutoMotorsDriver::read(const ros::Time &time,
   pos[0] += static_cast<double>(vel[0] * fabs(period.toSec()));
   pos[1] += static_cast<double>(vel[1] * fabs(period.toSec()));
 
-  ROS_INFO_STREAM("POS: " << pos[0] << " " << pos[1]);
+  ROS_DEBUG_STREAM("POS: " << pos[0] << " " << pos[1]);
 }
 
 void PlutoMotorsDriver::write(const ros::Time &time,
