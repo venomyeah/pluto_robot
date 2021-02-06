@@ -22,7 +22,7 @@
   <arg name="color_fps"           value="6"/>
   <arg name="gyro_fps"            value="400"/>
   <arg name="accel_fps"           value="250"/>
-  <arg name="enable_gyro"         value="false"/>
-  <arg name="enable_accel"        value="false"/>
+  <arg name="enable_gyro"         value="true"/>
+  <arg name="enable_accel"        value="true"/>
 </include>
 </launch>
