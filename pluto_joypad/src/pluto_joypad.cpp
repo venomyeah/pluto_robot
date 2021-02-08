@@ -45,7 +45,7 @@ void PlutoJoypad::joyCallback(const sensor_msgs::Joy joy_data) {
     // conversion
     geometry_msgs::Twist cmd_vel;
     cmd_vel.linear.x = 10 * (log10(x + 10) - 1);
-    cmd_vel.angular.z = 50 * (log10(z + 10) - 1);
+    cmd_vel.angular.z = 20 * (log10(z + 10) - 1);
 
     // pub
     twist_pub_.publish(cmd_vel);
