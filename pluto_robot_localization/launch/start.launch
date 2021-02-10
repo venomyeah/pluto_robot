@@ -1,4 +1,12 @@
 <?xml version="1.0"?>
 <launch>
+  <node pkg="robot_localization" type="ukf_localization_node" name="ukf_se" clear_params="true">
+    <rosparam command="load" file="$(find pluto_robot_localization)/config/config.yaml" />
+    <remap from="odom" to="pluto_motors/diff_drive_controller/odom"/>
+    <remap from="imu" to="camera/imu"/>
+  </node>
+  <!--  Placeholder for output topic remapping
+
+  -->
 
 </launch>

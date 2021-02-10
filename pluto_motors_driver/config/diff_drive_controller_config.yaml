@@ -22,4 +22,4 @@ pluto_motors:
 
     # Odometry
     enable_odom_tf: true
-    odom_frame_id: '/odom'
+    odom_frame_id: 'odom'
