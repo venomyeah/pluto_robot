@@ -145,7 +145,7 @@
 
   <!-- Camera -->
   <xacro:sensor_d435i parent="roof" use_nominal_extrinsics="true">
-    <origin xyz="0.22 0 0.12" rpy="0 0.63 0"/>
+    <origin xyz="0.195 0 0.12" rpy="0 0 0"/>
   </xacro:sensor_d435i>
 
 </robot>
