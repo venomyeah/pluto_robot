@@ -1,9 +1,17 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="motors" default="true"/>
+  <arg name="cartographer" default="true"/>
+  <arg name="description" default="true"/>
+  <arg name="joypad" default="true"/>
   <arg name="lidar" default="true"/>
-  <arg name="nav" default="true"/>
-  <arg name="cam" default="true"/>
+  <arg name="localization" default="true"/>
+  <arg name="motors" default="true"/>
+  <arg name="navigation" default="true"/>
+  <arg name="realsense" default="true"/>
+
+
+  <!-- Pluto Description -->
+  <include if="$(arg description)" file="$(find pluto_description)/launch/show_pluto.launch"/>
 
   <!-- Pluto Motors Driver -->
   <include if="$(arg motors)" file="$(find pluto_motors_driver)/launch/diff_drive_node.launch" />
@@ -12,10 +20,20 @@
   <include if="$(arg lidar)" file="$(find rplidar_ros)/launch/rplidar.launch"/>
 
   <!-- Realsense -->
-  <include if="$(arg cam)" file="$(find pluto_launch)/launch/realsense.launch"/>
+  <include if="$(arg realsense)" file="$(find pluto_launch)/launch/realsense.launch"/>
 
   <!-- Navigation -->
-  <include if="$(arg nav)" file="$(find pluto_2dnav)/launch/move_base.launch"/>
+  <include if="$(arg navigation)" file="$(find pluto_2dnav)/launch/move_base.launch"/>
+
+  <!-- Cartographer -->
+  <include if="$(arg cartographer)" file="$(find pluto_cartographer)/launch/pluto.launch"/>
+
+  <!-- Localization -->
+  <include if="$(arg localization)" file="$(find pluto_robot_localization)/launch/start.launch"/>
+
+  <!-- Joypad -->
+  <include if="$(arg joypad)" file="$(find pluto_joypad)/launch/node.launch"/>
+
 
 </launch>
 
