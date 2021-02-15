@@ -21,5 +21,5 @@ pluto_motors:
     cmd_vel_timeout: 0.25
 
     # Odometry
-    enable_odom_tf: true
+    enable_odom_tf: false
     odom_frame_id: 'odom'
